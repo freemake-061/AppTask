@@ -48,7 +48,9 @@ fun CreateForm() {
             .fillMaxWidth()
             .padding(all = 8.dp)
     ){
-        var quantity by remember { mutableStateOf(1000) }
+        var quantity by remember { mutableStateOf(5) }
+        var plusEnabled by remember { mutableStateOf(true) }
+        var minusEnabled by remember { mutableStateOf(true) }
         Text(
             text = "数量：${"%,d".format(quantity)}",
             fontSize = 20.sp
@@ -57,33 +59,53 @@ fun CreateForm() {
             modifier = Modifier.align(Alignment.TopEnd),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
+            // プラスボタン
             Button(
-                onClick = { quantity++ },
+                onClick = {
+                    quantity++
+                    // ±ボタンで同じような処理をまとめたい
+                    // whenをまとめたい
+                    when {
+                        quantity >= 9 -> plusEnabled = false
+                    }
+                    when {
+                        quantity > 0 -> minusEnabled = true
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Green,
                     contentColor = Color.White,
                     disabledContainerColor = Color.LightGray,
                     disabledContentColor = Color.Gray
                 ),
-                modifier = Modifier.size(width = 30.dp, height = 30.dp),
+                modifier = Modifier.size(width = 35.dp, height = 30.dp),
                 shape = RoundedCornerShape(3.dp),
-                enabled = true,
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = PaddingValues(0.dp),
+                enabled = plusEnabled
             ) {
                 Text(text = "＋")
             }
+            // マイナスボタン
             Button(
-                onClick = { quantity-- },
+                onClick = {
+                    quantity--
+                    when {
+                        quantity < 9 -> plusEnabled = true
+                    }
+                    when {
+                        quantity <= 0 -> minusEnabled = false
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Red,
                     contentColor = Color.White,
                     disabledContainerColor = Color.LightGray,
                     disabledContentColor = Color.Gray
                 ),
-                modifier = Modifier.size(width = 30.dp, height = 30.dp),
+                modifier = Modifier.size(width = 35.dp, height = 30.dp),
                 shape = RoundedCornerShape(3.dp),
-                enabled = true,
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = PaddingValues(0.dp),
+                enabled = minusEnabled
             ) {
                 Text(text = "－")
             }
