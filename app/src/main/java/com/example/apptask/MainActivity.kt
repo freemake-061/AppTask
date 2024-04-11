@@ -1,5 +1,6 @@
 package com.example.apptask
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,12 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.apptask.ui.theme.AppTaskTheme
+import java.time.LocalTime
+import kotlin.concurrent.timer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-                CreateForm()
+            CreateForm()
         }
     }
 }
@@ -52,12 +55,8 @@ const val min = 0
 @Composable
 fun CreateForm() {
     var quantity by remember { mutableIntStateOf(min) }
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 8.dp)
-        ){
+    Column(modifier = Modifier.padding(all = 8.dp)) {
+        Box(modifier = Modifier.fillMaxWidth()){
             Text(
                 text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
                 fontSize = 20.sp
@@ -105,6 +104,26 @@ fun CreateForm() {
                     Text(text = "－")
                 }
             }
+        }
+        Box(modifier = Modifier.fillMaxWidth()) {
+            var hour by remember { mutableStateOf(0) }
+            var minute by remember { mutableStateOf(0) }
+            var second by remember { mutableStateOf(0) }
+            timer(period = 1000) {
+                val calendar = Calendar.getInstance()
+                hour = calendar.get(Calendar.HOUR_OF_DAY)
+                minute = calendar.get(Calendar.MINUTE)
+                second = calendar.get(Calendar.SECOND)
+            }
+            Text(text = "${hour}:${minute}:${second}")
+            var comment by remember { mutableStateOf("") }
+            TextField(
+                value = comment,
+                onValueChange = { comment = it },
+                placeholder = { Text(text = "コメントを入力", fontSize = 15.sp) },
+                singleLine = true,
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
         }
     }
 }
