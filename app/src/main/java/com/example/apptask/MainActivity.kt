@@ -2,6 +2,7 @@ package com.example.apptask
 
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.widget.TextClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.apptask.ui.theme.AppTaskTheme
 import java.time.LocalTime
 import kotlin.concurrent.timer
@@ -106,16 +108,15 @@ fun CreateForm() {
             }
         }
         Box(modifier = Modifier.fillMaxWidth()) {
-            var hour by remember { mutableStateOf(0) }
-            var minute by remember { mutableStateOf(0) }
-            var second by remember { mutableStateOf(0) }
-            timer(period = 1000) {
-                val calendar = Calendar.getInstance()
-                hour = calendar.get(Calendar.HOUR_OF_DAY)
-                minute = calendar.get(Calendar.MINUTE)
-                second = calendar.get(Calendar.SECOND)
-            }
-            Text(text = "${hour}:${minute}:${second}")
+            AndroidView(
+                factory = { context ->
+                    TextClock(context).apply {
+                        format12Hour?.let { this.format12Hour = "hh:mm:ss" }
+                        timeZone?.let { this.timeZone = it }
+                        textSize.let { this.textSize = 20f }
+                    }
+                }
+            )
             var comment by remember { mutableStateOf("") }
             TextField(
                 value = comment,
