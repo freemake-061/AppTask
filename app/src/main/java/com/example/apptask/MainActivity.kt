@@ -106,7 +106,7 @@ fun CreateForm() {
                         containerColor = Color.Red,
                         contentColor = Color.White,
                         disabledContainerColor = Color.LightGray,
-                        disabledContentColor = Color.Gray
+                        disabledContentColor = Color.DarkGray
                     ),
                     modifier = Modifier.size(width = 50.dp, height = 30.dp),
                     shape = RoundedCornerShape(3.dp),
@@ -127,9 +127,9 @@ fun CreateForm() {
             AndroidView(
                 factory = { context ->
                     TextClock(context).apply {
-                        format12Hour?.let { this.format12Hour = "hh:mm:ss" }
+                        format12Hour?.let { this.format12Hour = "HH:mm:ss" }
                         timeZone?.let { this.timeZone = it }
-                        textSize.let { this.textSize = 15f}
+                        textSize.let { this.textSize = 15f }
                         setTextColor(context.getColor(R.color.black))
                     }
                 }
