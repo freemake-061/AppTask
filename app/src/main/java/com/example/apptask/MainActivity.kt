@@ -3,6 +3,7 @@ package com.example.apptask
 import android.content.res.ColorStateList
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.TypedValue
 import android.widget.TextClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -71,7 +72,7 @@ fun CreateForm() {
             Text(
                 text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
                 color = Color.Black,
-                fontSize = with(LocalDensity.current) { 20.dp.toSp() }  //フォントサイズをdpで指定
+                fontSize = with(LocalDensity.current) { 30.dp.toSp() }  //フォントサイズをdpで指定
             )
             Row(
                 modifier = Modifier.align(Alignment.TopEnd),
@@ -86,7 +87,7 @@ fun CreateForm() {
                         disabledContainerColor = Color.LightGray,
                         disabledContentColor = Color.Gray
                     ),
-                    modifier = Modifier.size(width = 50.dp, height = 30.dp),
+                    modifier = Modifier.size(width = 50.dp, height = 45.dp),
                     shape = RoundedCornerShape(3.dp),
                     contentPadding = PaddingValues(0.dp),
                     enabled = when(quantity) {
@@ -108,7 +109,7 @@ fun CreateForm() {
                         disabledContainerColor = Color.LightGray,
                         disabledContentColor = Color.DarkGray
                     ),
-                    modifier = Modifier.size(width = 50.dp, height = 30.dp),
+                    modifier = Modifier.size(width = 50.dp, height = 45.dp),
                     shape = RoundedCornerShape(3.dp),
                     contentPadding = PaddingValues(0.dp),
                     enabled = when(quantity) {
@@ -124,20 +125,21 @@ fun CreateForm() {
             }
         }
         Box(modifier = Modifier.fillMaxWidth()) {
-            AndroidView(
-                factory = { context ->
-                    TextClock(context).apply {
-                        format12Hour?.let { this.format12Hour = "HH:mm:ss" }
-                        timeZone?.let { this.timeZone = it }
-                        textSize.let { this.textSize = 15f }
-                        setTextColor(context.getColor(R.color.black))
-                    }
-                }
-            )
             Row(
                 modifier = Modifier.align(Alignment.TopEnd),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                AndroidView(
+                    factory = { context ->
+                        TextClock(context).apply {
+                            format12Hour?.let { this.format12Hour = "HH:mm:ss" }
+                            timeZone?.let { this.timeZone = it }
+                            textSize.let { this.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f) }
+                            setTextColor(context.getColor(R.color.black))
+                        }
+                    },
+                    modifier = Modifier.padding(2.dp)
+                )
                 var comment by remember { mutableStateOf("") }
                 BasicTextField(
                     value = comment,
@@ -148,21 +150,26 @@ fun CreateForm() {
                         .background(
                             color = Color.Transparent,
                             shape = RoundedCornerShape(1.dp)
-                        ),
+                        )
+                        .padding(0.dp),
                     decorationBox = { innerTextField ->
                         Box(
-                            Modifier.border(
-                                width = 1.dp,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(5.dp)
-                            )
+                            modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Gray,
+                                    shape = RoundedCornerShape(5.dp)
+                                )
+                                .padding(0.dp)
                         ) {
                             if (comment.isEmpty()) {
                                 Text(
                                     text = "コメントを入力",
                                     color = Color.Gray,
                                     fontSize = with(LocalDensity.current) { 20.dp.toSp() },  //フォントサイズをdpで指定
-                                    modifier = Modifier.padding(start = 5.dp)
+                                    modifier = Modifier.padding(
+                                        start = 5.dp
+                                    )
                                 )
                             } else {
                                 innerTextField()
