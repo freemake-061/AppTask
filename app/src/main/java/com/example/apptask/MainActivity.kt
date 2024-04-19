@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -38,23 +40,37 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CreateForm()
+            Column {
+                CreateForm()
+                CreateList()
+            }
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun QuantityPreview() {
+    Column {
+        CreateForm()
+        CreateList()
+    }
+}
+
 
 const val max = 9999
 const val min = 0
 
 @Composable
 fun QuantityForm() {
-    var quantity by remember { mutableIntStateOf(min) }
     Box(modifier = Modifier.fillMaxWidth()){
+        var quantity by remember { mutableIntStateOf(min) }
         Text(
             text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
             color = Color.Black,
             fontSize = with(LocalDensity.current) { 30.dp.toSp() }
         )
+
         Row(
             modifier = Modifier.align(Alignment.TopEnd),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -110,10 +126,7 @@ fun QuantityForm() {
 @Composable
 fun CommentForm() {
     Box(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.align(Alignment.TopEnd),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             AndroidView(
                 factory = { context ->
                     TextClock(context).apply {
@@ -123,7 +136,7 @@ fun CommentForm() {
                         setTextColor(context.getColor(R.color.black))
                     }
                 },
-                modifier = Modifier.padding(2.dp)
+                modifier = Modifier.padding(vertical = 2.dp)
             )
 
             var comment by remember { mutableStateOf("") }
@@ -132,7 +145,8 @@ fun CommentForm() {
                 onValueChange = { comment = it },
                 singleLine = true,
                 modifier = Modifier
-                    .size(width = 220.dp, height = 30.dp)
+                    .weight(1f)
+                    .height(30.dp)
                     .background(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(1.dp)
@@ -193,8 +207,49 @@ fun CreateForm() {
     }
 }
 
-@Preview(showBackground = true)
+data class Stock(val clock: String, val quantity: Int, val comment: String)
+
 @Composable
-fun QuantityPreview() {
-    CreateForm()
+fun StockCard(stc: Stock) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.align(Alignment.TopEnd),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = stc.clock)
+            Text(text = "%,d".format(stc.quantity))
+            Text(text = stc.comment)
+            Button(
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black,
+                    disabledContainerColor = Color.LightGray,
+                    disabledContentColor = Color.Black
+                ),
+                modifier = Modifier.size(width = 50.dp, height = 30.dp),
+                shape = RoundedCornerShape(3.dp),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(
+                    text = "削除",
+                    fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun StockList(stocks: List<Stock>) {
+    LazyColumn {
+
+    }
+}
+
+@Composable
+fun CreateList() {
+    Column{
+        StockCard(stc = Stock("23:59:59", 9999, "コメント"))
+    }
 }
