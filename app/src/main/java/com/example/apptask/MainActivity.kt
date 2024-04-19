@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -64,17 +66,19 @@ const val min = 0
 @Composable
 fun QuantityForm() {
     Box(modifier = Modifier.fillMaxWidth()){
-        var quantity by remember { mutableIntStateOf(min) }
-        Text(
-            text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
-            color = Color.Black,
-            fontSize = with(LocalDensity.current) { 30.dp.toSp() }
-        )
-
         Row(
             modifier = Modifier.align(Alignment.TopEnd),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
+            // 数量
+            var quantity by remember { mutableIntStateOf(min) }
+            Text(
+                text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
+                color = Color.Black,
+                fontSize = with(LocalDensity.current) { 30.dp.toSp() }
+            )
+            Spacer(modifier = Modifier.weight(1f))
             // プラスボタン
             Button(
                 onClick = { quantity ++ },
@@ -126,7 +130,10 @@ fun QuantityForm() {
 @Composable
 fun CommentForm() {
     Box(modifier = Modifier.fillMaxWidth()) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             AndroidView(
                 factory = { context ->
                     TextClock(context).apply {
@@ -135,8 +142,7 @@ fun CommentForm() {
                         textSize.let { this.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f) }
                         setTextColor(context.getColor(R.color.black))
                     }
-                },
-                modifier = Modifier.padding(vertical = 2.dp)
+                }
             )
 
             var comment by remember { mutableStateOf("") }
@@ -146,20 +152,15 @@ fun CommentForm() {
                 singleLine = true,
                 modifier = Modifier
                     .weight(1f)
-                    .height(30.dp)
-                    .background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(1.dp)
-                    )
-                    .padding(0.dp),
+                    .height(30.dp),
                 decorationBox = { innerTextField ->
                     Box(
-                        modifier = Modifier
-                            .border(
+                        modifier = Modifier.border(
                                 width = 1.dp,
                                 color = Color.Gray,
                                 shape = RoundedCornerShape(5.dp)
-                            )
+                            ),
+                        contentAlignment = Alignment.CenterStart
                     ) {
                         if (comment.isEmpty()) {
                             Text(
@@ -211,14 +212,24 @@ data class Stock(val clock: String, val quantity: Int, val comment: String)
 
 @Composable
 fun StockCard(stc: Stock) {
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .background(color = Color.Cyan)
+    ) {
         Row(
-            modifier = Modifier.align(Alignment.TopEnd),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(horizontal = 8.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(text = stc.clock)
             Text(text = "%,d".format(stc.quantity))
-            Text(text = stc.comment)
+            Text(
+                text = stc.comment,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)  // 長いコメントは省略
             Button(
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
@@ -250,6 +261,6 @@ fun StockList(stocks: List<Stock>) {
 @Composable
 fun CreateList() {
     Column{
-        StockCard(stc = Stock("23:59:59", 9999, "コメント"))
+        StockCard(stc = Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"))
     }
 }
