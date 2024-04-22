@@ -178,9 +178,7 @@ fun CommentForm() {
             )
 
             Button(
-                onClick = {
-
-                },
+                onClick = { addStock() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.Black,
@@ -198,6 +196,10 @@ fun CommentForm() {
             }
         }
     }
+}
+
+fun addStock() {
+    StockData.stockList += Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント")
 }
 
 @Composable
@@ -264,7 +266,7 @@ fun CreateList(stocks: List<Stock>) {
 }
 
 object StockData {
-    val stockList = listOf(
+    val stockList = mutableListOf(
         Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
         Stock("00:00:00", 0, "")
     )
