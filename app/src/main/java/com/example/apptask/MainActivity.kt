@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Column {
                 CreateForm()
-                CreateList()
+                CreateList(StockData.stockList)
             }
         }
     }
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
 fun QuantityPreview() {
     Column {
         CreateForm()
-        CreateList()
+        CreateList(StockData.stockList)
     }
 }
 
@@ -83,8 +84,8 @@ fun QuantityForm() {
             Button(
                 onClick = { quantity ++ },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Green,
-                    contentColor = Color.White,
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black,
                     disabledContainerColor = Color.LightGray,
                     disabledContentColor = Color.Gray
                 ),
@@ -105,10 +106,10 @@ fun QuantityForm() {
             Button(
                 onClick = { quantity -- },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red,
-                    contentColor = Color.White,
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black,
                     disabledContainerColor = Color.LightGray,
-                    disabledContentColor = Color.DarkGray
+                    disabledContentColor = Color.Gray
                 ),
                 modifier = Modifier.size(width = 50.dp, height = 45.dp),
                 shape = RoundedCornerShape(3.dp),
@@ -177,12 +178,14 @@ fun CommentForm() {
             )
 
             Button(
-                onClick = {},
+                onClick = {
+
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.Black,
                     disabledContainerColor = Color.LightGray,
-                    disabledContentColor = Color.Black
+                    disabledContentColor = Color.Gray
                 ),
                 modifier = Modifier.size(width = 50.dp, height = 30.dp),
                 shape = RoundedCornerShape(3.dp),
@@ -214,7 +217,7 @@ data class Stock(val clock: String, val quantity: Int, val comment: String)
 fun StockCard(stc: Stock) {
     Box(modifier = Modifier
         .fillMaxWidth()
-        .background(color = Color.Cyan)
+        .background(color = Color(0xFFbac3ff))
     ) {
         Row(
             modifier = Modifier
@@ -236,7 +239,7 @@ fun StockCard(stc: Stock) {
                     containerColor = Color.LightGray,
                     contentColor = Color.Black,
                     disabledContainerColor = Color.LightGray,
-                    disabledContentColor = Color.Black
+                    disabledContentColor = Color.Gray
                 ),
                 modifier = Modifier.size(width = 50.dp, height = 30.dp),
                 shape = RoundedCornerShape(3.dp),
@@ -252,15 +255,17 @@ fun StockCard(stc: Stock) {
 }
 
 @Composable
-fun StockList(stocks: List<Stock>) {
+fun CreateList(stocks: List<Stock>) {
     LazyColumn {
-
+        items(stocks) { stock ->
+            StockCard(stock)
+        }
     }
 }
 
-@Composable
-fun CreateList() {
-    Column{
-        StockCard(stc = Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"))
-    }
+object StockData {
+    val stockList = listOf(
+        Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
+        Stock("00:00:00", 0, "")
+    )
 }
