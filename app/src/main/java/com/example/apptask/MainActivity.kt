@@ -1,10 +1,12 @@
 package com.example.apptask
 
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.widget.TextClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +40,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -51,6 +56,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun QuantityPreview() {
@@ -60,20 +66,25 @@ fun QuantityPreview() {
     }
 }
 
-
+data class Stock(val clock: String, val quantity: Int, val comment: String)
 const val max = 9999
 const val min = 0
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun QuantityForm() {
-    Box(modifier = Modifier.fillMaxWidth()){
+fun CreateForm() {
+    Column(
+        modifier = Modifier
+            .padding(all = 8.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        var quantity by rememberSaveable { mutableIntStateOf(min) }
         Row(
-            modifier = Modifier.align(Alignment.TopEnd),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             // 数量
-            var quantity by remember { mutableIntStateOf(min) }
             Text(
                 text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
                 color = Color.Black,
@@ -125,16 +136,11 @@ fun QuantityForm() {
                 )
             }
         }
-    }
-}
-
-@Composable
-fun CommentForm() {
-    Box(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // 時刻
             AndroidView(
                 factory = { context ->
                     TextClock(context).apply {
@@ -145,8 +151,8 @@ fun CommentForm() {
                     }
                 }
             )
-
-            var comment by remember { mutableStateOf("") }
+            // コメント入力欄
+            var comment by rememberSaveable { mutableStateOf("") }
             BasicTextField(
                 value = comment,
                 onValueChange = { comment = it },
@@ -157,10 +163,10 @@ fun CommentForm() {
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier.border(
-                                width = 1.dp,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(5.dp)
-                            ),
+                            width = 1.dp,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(5.dp)
+                        ),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         if (comment.isEmpty()) {
@@ -176,9 +182,17 @@ fun CommentForm() {
                     }
                 }
             )
-
+            // 追加ボタン
             Button(
-                onClick = { addStock() },
+                onClick = {
+                    val formatTime = DateTimeFormatter.ofPattern("HH:mm:ss")
+                    val currentTime = formatTime.format(LocalDateTime.now())
+                    StockData.stockList += Stock(
+                        clock = currentTime,
+                        quantity = quantity,
+                        comment = comment
+                    )
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.Black,
@@ -197,23 +211,6 @@ fun CommentForm() {
         }
     }
 }
-
-fun addStock() {
-    StockData.stockList += Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント")
-}
-
-@Composable
-fun CreateForm() {
-    Column(
-        modifier = Modifier.padding(all = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp)
-    ) {
-        QuantityForm()
-        CommentForm()
-    }
-}
-
-data class Stock(val clock: String, val quantity: Int, val comment: String)
 
 @Composable
 fun StockCard(stc: Stock) {
@@ -266,7 +263,7 @@ fun CreateList(stocks: List<Stock>) {
 }
 
 object StockData {
-    val stockList = mutableListOf(
+    var stockList = listOf(
         Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
         Stock("00:00:00", 0, "")
     )
