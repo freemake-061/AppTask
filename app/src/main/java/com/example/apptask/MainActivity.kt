@@ -1,5 +1,6 @@
 package com.example.apptask
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -9,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Box
@@ -25,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.apptask.ui.theme.AppTaskTheme
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -56,13 +60,26 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true,
+    name = "light Mode"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    name = "Dark Mode"
+)
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
 @Composable
 fun QuantityPreview() {
-    Column {
-        CreateForm()
-        CreateList(StockData.stockList)
+    AppTaskTheme {
+        Surface {
+            Column {
+                CreateForm()
+                CreateList(StockData.stockList)
+            }
+        }
     }
 }
 
@@ -87,7 +104,6 @@ fun CreateForm() {
             // 数量
             Text(
                 text = "数量：${"%,d".format(quantity)}",  // カンマ付き表示
-                color = Color.Black,
                 fontSize = with(LocalDensity.current) { 30.dp.toSp() }
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -141,13 +157,18 @@ fun CreateForm() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // 時刻
+            val darkTheme: Boolean = isSystemInDarkTheme()
             AndroidView(
                 factory = { context ->
                     TextClock(context).apply {
                         format12Hour?.let { this.format12Hour = "HH:mm:ss" }
                         timeZone?.let { this.timeZone = it }
                         textSize.let { this.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f) }
-                        setTextColor(context.getColor(R.color.black))
+                        if (darkTheme) {
+                            setTextColor(context.getColor(R.color.white))
+                        } else {
+                            setTextColor(context.getColor(R.color.black))
+                        }
                     }
                 }
             )
@@ -219,19 +240,31 @@ fun StockCard(stc: Stock) {
         .background(color = Color(0xFFbac3ff))
     ) {
         Row(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(horizontal = 8.dp, vertical = 5.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = stc.clock)
-            Text(text = "%,d".format(stc.quantity))
+            Text(text = stc.clock,
+                color = Color.Black,
+                fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+            )
+            Box(
+                modifier = Modifier.size(width = 40.dp, height = 20.dp),
+                contentAlignment = Alignment.CenterEnd
+            ){
+                Text(text = "%,d".format(stc.quantity),
+                    color = Color.Black,
+                    fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+                )
+            }
             Text(
                 text = stc.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis)  // 長いコメントは省略
+                overflow = TextOverflow.Ellipsis,    // 長いコメントは省略
+                color = Color.Black,
+                fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+            )
             Button(
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
@@ -255,6 +288,8 @@ fun StockCard(stc: Stock) {
 
 @Composable
 fun CreateList(stocks: List<Stock>) {
+    //var stcList = remember { mutableStateListOf<Stock>() }
+    //stcList = stocks
     LazyColumn {
         items(stocks) { stock ->
             StockCard(stock)
