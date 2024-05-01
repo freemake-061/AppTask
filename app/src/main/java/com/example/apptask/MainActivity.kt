@@ -9,7 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,21 +26,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -90,6 +92,7 @@ data class Stock(val clock: String, val quantity: Int, val comment: String)
 const val max = 9999
 const val min = 0
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateForm() {
@@ -164,8 +167,9 @@ fun CreateForm() {
             AndroidView(
                 factory = { context ->
                     TextClock(context).apply {
-                        format12Hour?.let { this.format12Hour = "HH:mm:ss" }
-                        timeZone?.let { this.timeZone = it }
+                        format12Hour?.let { this.format12Hour = "hh:mm:ss" }
+                        format24Hour?.let { this.format24Hour = "hh:mm:ss" }
+                        timeZone?.let { this.timeZone = null }
                         textSize.let { this.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f) }
                         if (darkTheme) {
                             setTextColor(context.getColor(R.color.white))
@@ -176,34 +180,36 @@ fun CreateForm() {
                 }
             )
             // コメント入力欄
+            val focusManager = LocalFocusManager.current
             var comment by rememberSaveable { mutableStateOf("") }
             BasicTextField(
                 value = comment,
+                modifier = Modifier.weight(1f),
                 onValueChange = { comment = it },
                 singleLine = true,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(30.dp),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier.border(
-                            width = 1.dp,
-                            color = Color.Gray,
-                            shape = RoundedCornerShape(5.dp)
+                textStyle = TextStyle(fontSize = with(LocalDensity.current) { 20.dp.toSp() }),
+                decorationBox = @Composable { innerTextField ->
+                    TextFieldDefaults.DecorationBox(
+                        value = comment,
+                        innerTextField = innerTextField,
+                        enabled = true,
+                        singleLine = true,
+                        visualTransformation = VisualTransformation.None,
+                        interactionSource = MutableInteractionSource(),
+                        contentPadding = TextFieldDefaults.contentPaddingWithLabel(
+                            start = 0.dp,
+                            top = 0.dp,
+                            end = 0.dp,
+                            bottom = 0.dp,
                         ),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        if (comment.isEmpty()) {
+                        placeholder = {
                             Text(
                                 text = "コメントを入力",
                                 color = Color.Gray,
-                                fontSize = with(LocalDensity.current) { 20.dp.toSp() },  //フォントサイズをdpで指定
-                                modifier = Modifier.padding(start = 5.dp)
+                                fontSize = with(LocalDensity.current) { 15.dp.toSp() }
                             )
-                        } else {
-                            innerTextField()
                         }
-                    }
+                    )
                 }
             )
             // 追加ボタン
@@ -211,6 +217,7 @@ fun CreateForm() {
                 onClick = {
                     val formatTime = DateTimeFormatter.ofPattern("HH:mm:ss")
                     val currentTime = formatTime.format(LocalDateTime.now())
+                    focusManager.clearFocus()
                     StockData.stockList += Stock(
                         clock = currentTime,
                         quantity = quantity,
@@ -227,7 +234,8 @@ fun CreateForm() {
                 ),
                 modifier = Modifier.size(width = 50.dp, height = 30.dp),
                 shape = RoundedCornerShape(3.dp),
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = PaddingValues(0.dp),
+                enabled = comment.isNotEmpty()
             ) {
                 Text(
                     text = "追加",
