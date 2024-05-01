@@ -32,9 +32,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -213,6 +216,8 @@ fun CreateForm() {
                         quantity = quantity,
                         comment = comment
                     )
+                    quantity = 0
+                    comment = ""
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
@@ -245,6 +250,7 @@ fun StockCard(stc: Stock) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(text = stc.clock,
+                overflow = TextOverflow.Ellipsis,
                 color = Color.Black,
                 fontSize = with(LocalDensity.current) { 15.dp.toSp() }
             )
@@ -253,6 +259,7 @@ fun StockCard(stc: Stock) {
                 contentAlignment = Alignment.CenterEnd
             ){
                 Text(text = "%,d".format(stc.quantity),
+                    overflow = TextOverflow.Ellipsis,
                     color = Color.Black,
                     fontSize = with(LocalDensity.current) { 15.dp.toSp() }
                 )
@@ -288,8 +295,6 @@ fun StockCard(stc: Stock) {
 
 @Composable
 fun CreateList(stocks: List<Stock>) {
-    //var stcList = remember { mutableStateListOf<Stock>() }
-    //stcList = stocks
     LazyColumn {
         items(stocks) { stock ->
             StockCard(stock)
@@ -298,8 +303,9 @@ fun CreateList(stocks: List<Stock>) {
 }
 
 object StockData {
-    var stockList = listOf(
+    var stockList = mutableStateListOf(
         Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
-        Stock("00:00:00", 0, "")
+        Stock("00:00:00", 0, ""),
+        Stock("00:00:00", 0, """!"#$%&'()=~|`{}_?*+><'""")
     )
 }
