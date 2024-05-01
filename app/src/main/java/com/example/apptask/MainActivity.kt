@@ -8,7 +8,6 @@ import android.widget.TextClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -250,36 +250,43 @@ fun CreateForm() {
 fun StockCard(stc: Stock) {
     Box(modifier = Modifier
         .fillMaxWidth()
-        .background(color = Color(0xFFbac3ff))
+        //.background(color = Color(0xFFbac3ff))
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            var isChecked by rememberSaveable { mutableStateOf(false) }
+            Checkbox(
+                modifier = Modifier.size(15.dp),
+                checked = isChecked,
+                onCheckedChange = { isChecked = !isChecked }
+            )
+            // 時刻
             Text(text = stc.clock,
                 overflow = TextOverflow.Ellipsis,
-                color = Color.Black,
                 fontSize = with(LocalDensity.current) { 15.dp.toSp() }
             )
+            // 数量
             Box(
                 modifier = Modifier.size(width = 40.dp, height = 20.dp),
                 contentAlignment = Alignment.CenterEnd
             ){
                 Text(text = "%,d".format(stc.quantity),
                     overflow = TextOverflow.Ellipsis,
-                    color = Color.Black,
                     fontSize = with(LocalDensity.current) { 15.dp.toSp() }
                 )
             }
+            // コメント
             Text(
                 text = stc.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,    // 長いコメントは省略
-                color = Color.Black,
                 fontSize = with(LocalDensity.current) { 15.dp.toSp() }
             )
+            // 削除ボタン
             Button(
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
