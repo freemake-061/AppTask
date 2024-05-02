@@ -8,6 +8,7 @@ import android.widget.TextClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -16,11 +17,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
@@ -70,19 +72,22 @@ class MainActivity : ComponentActivity() {
     showBackground = true,
     name = "light Mode"
 )
+/*
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true,
     name = "Dark Mode"
 )
+*/
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QuantityPreview() {
     AppTaskTheme {
         Surface {
-            Column {
+            Column(modifier = Modifier.fillMaxHeight()) {
                 CreateForm()
                 CreateList(StockData.stockList)
+                CreateController()
             }
         }
     }
@@ -247,24 +252,32 @@ fun CreateForm() {
 }
 
 @Composable
-fun StockCard(stc: Stock) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        //.background(color = Color(0xFFbac3ff))
+fun StockCard(ind: Int, stc: Stock) {
+    var isChecked by rememberSaveable { mutableStateOf(false) }
+    var cardColor = Color(0xFFFFFBFE)
+    if (isChecked) {
+        cardColor = Color(0xFF00ff00)
+    } else if (ind % 2 == 0) {
+        cardColor = Color(0xFFe6e6fa)
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = cardColor)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            var isChecked by rememberSaveable { mutableStateOf(false) }
             Checkbox(
                 modifier = Modifier.size(15.dp),
                 checked = isChecked,
                 onCheckedChange = { isChecked = !isChecked }
             )
             // 時刻
-            Text(text = stc.clock,
+            Text(
+                text = stc.clock,
                 overflow = TextOverflow.Ellipsis,
                 fontSize = with(LocalDensity.current) { 15.dp.toSp() }
             )
@@ -273,7 +286,8 @@ fun StockCard(stc: Stock) {
                 modifier = Modifier.size(width = 40.dp, height = 20.dp),
                 contentAlignment = Alignment.CenterEnd
             ){
-                Text(text = "%,d".format(stc.quantity),
+                Text(
+                    text = "%,d".format(stc.quantity),
                     overflow = TextOverflow.Ellipsis,
                     fontSize = with(LocalDensity.current) { 15.dp.toSp() }
                 )
@@ -288,7 +302,9 @@ fun StockCard(stc: Stock) {
             )
             // 削除ボタン
             Button(
-                onClick = {},
+                onClick = {
+                    StockData.stockList.removeAt(ind)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.LightGray,
                     contentColor = Color.Black,
@@ -311,8 +327,8 @@ fun StockCard(stc: Stock) {
 @Composable
 fun CreateList(stocks: List<Stock>) {
     LazyColumn {
-        items(stocks) { stock ->
-            StockCard(stock)
+        itemsIndexed(stocks) { index, stock ->
+            StockCard(index, stock)
         }
     }
 }
@@ -323,4 +339,56 @@ object StockData {
         Stock("00:00:00", 0, ""),
         Stock("00:00:00", 0, """!"#$%&'()=~|`{}_?*+><'""")
     )
+}
+
+@Composable
+fun CreateController() {
+    Row(
+        modifier = Modifier
+            .padding(all = 8.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.End)
+    ) {
+        // クリアボタン
+        Button(
+            onClick = {
+                StockData.stockList.clear()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.Gray
+            ),
+            modifier = Modifier.size(width = 50.dp, height = 30.dp),
+            shape = RoundedCornerShape(3.dp),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Text(
+                text = "クリア",
+                fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+            )
+        }
+        // 合計ボタン
+        Button(
+            onClick = {
+                StockData.stockList.sumOf { it.quantity }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.LightGray,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.Gray
+            ),
+            modifier = Modifier.size(width = 50.dp, height = 30.dp),
+            shape = RoundedCornerShape(3.dp),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Text(
+                text = "合計",
+                fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+            )
+        }
+    }
 }
