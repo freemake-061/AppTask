@@ -25,12 +25,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,6 +64,7 @@ class MainActivity : ComponentActivity() {
             Column {
                 CreateForm()
                 CreateList(StockData.stockList)
+                CreateController()
             }
         }
     }
@@ -343,6 +346,7 @@ object StockData {
 
 @Composable
 fun CreateController() {
+    var showDialog by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .padding(all = 8.dp)
@@ -373,7 +377,7 @@ fun CreateController() {
         // 合計ボタン
         Button(
             onClick = {
-                StockData.stockList.sumOf { it.quantity }
+                showDialog = true
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.LightGray,
@@ -390,5 +394,20 @@ fun CreateController() {
                 fontSize = with(LocalDensity.current) { 15.dp.toSp() }
             )
         }
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog = false
+            },
+            text = {
+                Text("数量：${"%,d".format(StockData.stockList.sumOf { it.quantity })}")
+            },
+            confirmButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("OK")
+                }
+            },
+        )
     }
 }
