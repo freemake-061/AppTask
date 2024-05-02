@@ -64,7 +64,6 @@ class MainActivity : ComponentActivity() {
             Column {
                 CreateForm()
                 CreateList(StockData.stockList)
-                CreateController()
             }
         }
     }
@@ -90,7 +89,6 @@ fun QuantityPreview() {
             Column(modifier = Modifier.fillMaxHeight()) {
                 CreateForm()
                 CreateList(StockData.stockList)
-                CreateController()
             }
         }
     }
@@ -345,19 +343,8 @@ fun CreateList(stocks: List<Stock>) {
             StockCard(index, stock)
         }
     }
-}
-
-object StockData {
-    var stockList = mutableStateListOf(
-        Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
-        Stock("00:00:00", 0, ""),
-        Stock("00:00:00", 0, """!"#$%&'()=~|`{}_?*+><'""")
-    )
-}
-
-@Composable
-fun CreateController() {
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+    var alertDialog by rememberSaveable { mutableStateOf(false) }
+    var sumDialog by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .padding(all = 8.dp)
@@ -368,7 +355,7 @@ fun CreateController() {
         // クリアボタン
         Button(
             onClick = {
-                StockData.stockList.clear()
+                alertDialog = true
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.LightGray,
@@ -387,9 +374,7 @@ fun CreateController() {
         }
         // 合計ボタン
         Button(
-            onClick = {
-                showDialog = true
-            },
+            onClick = { sumDialog = true },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.LightGray,
                 contentColor = Color.Black,
@@ -406,19 +391,48 @@ fun CreateController() {
             )
         }
     }
-    if (showDialog) {
+    if (alertDialog) {
         AlertDialog(
-            onDismissRequest = {
-                showDialog = false
-            },
+            onDismissRequest = { alertDialog = false },
             text = {
-                Text("数量：${"%,d".format(StockData.stockList.sumOf { it.quantity })}")
+                Text(text = "本当に削除しますか？")
             },
             confirmButton = {
-                TextButton(onClick = { showDialog = false }) {
-                    Text("OK")
+                TextButton(
+                    onClick = {
+                        StockData.stockList.clear()
+                        alertDialog = false
+                    }
+                ) {
+                    Text(text = "OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { alertDialog = false }) {
+                    Text(text = "Cancel")
+                }
+            }
+        )
+    }
+    if (sumDialog) {
+        AlertDialog(
+            onDismissRequest = { sumDialog = false },
+            text = {
+                Text(text = "合計${"%,d".format(StockData.stockList.sumOf{ it.quantity })}です。")
+            },
+            confirmButton = {
+                TextButton(onClick = { sumDialog = false }) {
+                    Text(text = "OK")
                 }
             },
         )
     }
+}
+
+object StockData {
+    var stockList = mutableStateListOf(
+        Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
+        Stock("00:00:00", 0, ""),
+        Stock("00:00:00", 0, """!"#$%&'()=~|`{}_?*+><'""")
+    )
 }
