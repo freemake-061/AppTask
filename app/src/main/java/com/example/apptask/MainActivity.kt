@@ -296,13 +296,24 @@ fun StockCard(ind: Int, stc: Stock) {
                 )
             }
             // コメント
-            Text(
-                text = stc.comment,
-                modifier = Modifier.weight(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,    // 長いコメントは省略
-                fontSize = with(LocalDensity.current) { 15.dp.toSp() }
-            )
+            if (stc.comment.isEmpty()) {
+                Text(
+                    text = "コメント無し",
+                    color = Color.LightGray,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+                )
+            } else {
+                Text(
+                    text = stc.comment,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,    // 長いコメントは省略
+                    fontSize = with(LocalDensity.current) { 15.dp.toSp() }
+                )
+            }
             // 削除ボタン
             Button(
                 onClick = {
