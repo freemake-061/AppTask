@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -252,7 +253,7 @@ fun CreateForm() {
 
 @Composable
 fun StockCard(ind: Int, stc: Stock) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
+    var isChecked by remember { mutableStateOf(false) }
     var cardColor = Color(0xFFFFFBFE)
     if (isChecked) {
         cardColor = Color(0xFF00ff00)
@@ -389,12 +390,12 @@ fun CreateList(stocks: List<Stock>) {
                 disabledContainerColor = Color.LightGray,
                 disabledContentColor = Color.Gray
             ),
-            modifier = Modifier.size(width = 50.dp, height = 30.dp),
+            modifier = Modifier.size(width = 150.dp, height = 30.dp),
             shape = RoundedCornerShape(3.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
             Text(
-                text = "合計",
+                text = "選択された合計数量",
                 fontSize = with(LocalDensity.current) { 15.dp.toSp() }
             )
         }
