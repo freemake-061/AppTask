@@ -431,7 +431,7 @@ fun CreateList(stocks: List<Stock>) {
 
 object StockData {
     var stockList = mutableStateListOf(
-        Stock("23:59:59", 9999, "コメントコメントコメントコメントコメントコメント"),
+        Stock("23:59:59", 9999, "コメントコメントコメントコメントコメント"),
         Stock("00:00:00", 0, ""),
         Stock("00:00:00", 0, """!"#$%&'()=~|`{}_?*+><'""")
     )
