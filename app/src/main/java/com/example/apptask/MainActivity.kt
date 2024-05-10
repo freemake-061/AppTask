@@ -61,9 +61,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Column {
-                CreateForm()
-                CreateList(StockData.stockList)
+            AppTaskTheme {
+                Surface {
+                    Column(modifier = Modifier.fillMaxHeight()) {
+                        CreateForm()
+                        CreateList(StockData.stockList)
+                    }
+                }
             }
         }
     }
@@ -74,13 +78,6 @@ class MainActivity : ComponentActivity() {
     showBackground = true,
     name = "light Mode"
 )
-/*
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-*/
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QuantityPreview() {
@@ -97,6 +94,7 @@ fun QuantityPreview() {
 data class Stock(val clock: String, val quantity: Int, val comment: String)
 const val max = 9999
 const val min = 0
+var sum = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -274,7 +272,14 @@ fun StockCard(ind: Int, stc: Stock) {
             Checkbox(
                 modifier = Modifier.size(15.dp),
                 checked = isChecked,
-                onCheckedChange = { isChecked = !isChecked }
+                onCheckedChange = {
+                    isChecked = !isChecked
+                    if (isChecked) {
+                        sum += stc.quantity
+                    } else {
+                        sum -= stc.quantity
+                    }
+                }
             )
             // 時刻
             Text(
@@ -315,6 +320,9 @@ fun StockCard(ind: Int, stc: Stock) {
             // 削除ボタン
             Button(
                 onClick = {
+                    if (isChecked) {
+                        sum -= stc.quantity
+                    }
                     StockData.stockList.removeAt(ind)
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -401,6 +409,7 @@ fun CreateList(stocks: List<Stock>) {
                 TextButton(
                     onClick = {
                         StockData.stockList.clear()
+                        sum = 0
                         alertDialog = false
                     }
                 ) {
@@ -418,7 +427,7 @@ fun CreateList(stocks: List<Stock>) {
         AlertDialog(
             onDismissRequest = { sumDialog = false },
             text = {
-                Text(text = "合計${"%,d".format(StockData.stockList.sumOf{ it.quantity })}です。")
+                Text(text = "合計${"%,d".format(sum)}です。")
             },
             confirmButton = {
                 TextButton(onClick = { sumDialog = false }) {
@@ -431,8 +440,6 @@ fun CreateList(stocks: List<Stock>) {
 
 object StockData {
     var stockList = mutableStateListOf(
-        Stock("23:59:59", 9999, "ココメントコメントコメントコメント"),
-        Stock("00:00:00", 0, ""),
-        Stock("00:00:00", 0, """!"#$%&'()=~|`{}_?*+><'""")
+        Stock("23:59:59", 9999, "コメント")
     )
 }
