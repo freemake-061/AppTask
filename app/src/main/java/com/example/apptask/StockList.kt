@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ShowStockList() {
+fun StockList() {
     var isChecked by rememberSaveable { mutableStateOf(false) }
     var lineColor = Color(0xFFe6e6fa)
     if (isChecked) {

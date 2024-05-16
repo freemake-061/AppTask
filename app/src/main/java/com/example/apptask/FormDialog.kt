@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
@@ -39,7 +40,7 @@ import androidx.compose.ui.window.Dialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowFormDialog(setShowDialog: (Boolean) -> Unit) {
+fun FormDialog(setShowDialog: (Boolean) -> Unit) {
     Dialog(onDismissRequest = { setShowDialog(false) }) {
         Surface {
             Column(
@@ -51,7 +52,7 @@ fun ShowFormDialog(setShowDialog: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "アイテムを追加",
+                        text = stringResource(R.string.form_title),
                         style = TextStyle(fontWeight = FontWeight.Bold)
                     )
                     Icon(
@@ -66,7 +67,7 @@ fun ShowFormDialog(setShowDialog: (Boolean) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     var quantity by rememberSaveable { mutableIntStateOf(min) }
-                    Text(text = "数量：${"%,d".format(quantity)}")
+                    Text(text = stringResource(R.string.form_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
                         onClick = { quantity ++ },
@@ -91,12 +92,13 @@ fun ShowFormDialog(setShowDialog: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val clockFormat = "hh:mm:ss"
                     val isDarkTheme = isSystemInDarkTheme()
                     AndroidView(
                         factory = { context ->
                             TextClock(context).apply {
-                                format12Hour?.let { this.format12Hour = "hh:mm:ss" }
-                                format24Hour?.let { this.format24Hour = "hh:mm:ss" }
+                                format12Hour?.let { this.format12Hour = clockFormat }
+                                format24Hour?.let { this.format24Hour = clockFormat }
                                 timeZone?.let {this.timeZone = null}
                                 if (isDarkTheme) {
                                     setTextColor(context.getColor(R.color.white))
@@ -126,7 +128,7 @@ fun ShowFormDialog(setShowDialog: (Boolean) -> Unit) {
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = "コメントを入力",
+                                        text = stringResource(R.string.form_placeHolder),
                                         style = TextStyle(color = Color.Gray)
                                     )
                                 }
@@ -139,7 +141,7 @@ fun ShowFormDialog(setShowDialog: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(onClick = { setShowDialog(false) }) {
-                        Text(text = "追加")
+                        Text(text = stringResource(R.string.form_addButton))
                     }
                 }
             }

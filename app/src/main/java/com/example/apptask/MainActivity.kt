@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTaskTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    ShowHome()
+                    Home()
                 }
             }
         }
@@ -53,10 +53,10 @@ class MainActivity : ComponentActivity() {
     name = "Dark Mode"
 )
 @Composable
-fun Preview() {
+private fun Preview() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
-            ShowHome()
+            Home()
         }
     }
 }
@@ -64,14 +64,14 @@ fun Preview() {
 const val min = 0
 const val max = 9999
 
-data class StockData(val whenAdded: String, val quantity: Int, val comment: String)
+data class Stock(val clock: String, val quantity: Int, val comment: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowHome() {
-    var showDialog by rememberSaveable { mutableStateOf(true) }
-    if (showDialog)
-        ShowFormDialog(setShowDialog = { showDialog = it })
+private fun Home() {
+    var canShowDialog by rememberSaveable { mutableStateOf(true) }
+    if (canShowDialog)
+        FormDialog(setShowDialog = { canShowDialog = it })
     Scaffold(
         topBar = {
             TopAppBar(
@@ -85,7 +85,7 @@ fun ShowHome() {
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
+            FloatingActionButton(onClick = { canShowDialog = true }) {
                 Icon(Icons.Default.Add, "Floating action button")
             }
         }
@@ -93,7 +93,7 @@ fun ShowHome() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            ShowStockList()
+            StockList()
         }
     }
 }
