@@ -57,7 +57,7 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     )
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = null,
+                        contentDescription = "Close",
                         tint = colorResource(android.R.color.darker_gray),
                         modifier = Modifier.clickable { setShowDialog(false) }
                     )
