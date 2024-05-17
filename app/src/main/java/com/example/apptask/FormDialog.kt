@@ -37,6 +37,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,8 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
+                var comment by rememberSaveable { mutableStateOf("") }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -66,7 +70,6 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
                     Text(text = stringResource(R.string.form_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
@@ -105,7 +108,6 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                             }
                         }
                     )
-                    var comment by rememberSaveable { mutableStateOf("") }
                     BasicTextField(
                         modifier = Modifier.weight(1f),
                         value = comment,
@@ -139,7 +141,18 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = { setShowDialog(false) }) {
+                    Button(
+                        onClick = {
+                            setShowDialog(false)
+                            val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+                            val currentTime = formatTime.format(LocalDateTime.now())
+                            StockData.stocks += Stock(
+                                clock = currentTime,
+                                quantity = quantity,
+                                comment = comment
+                            )
+                        }
+                    ) {
                         Text(text = stringResource(R.string.form_addButton))
                     }
                 }

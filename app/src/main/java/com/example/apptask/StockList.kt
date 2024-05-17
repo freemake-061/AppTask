@@ -59,7 +59,8 @@ fun StockCard(ind: Int, stc: Stock) {
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Delete"
+                contentDescription = "Delete",
+                modifier = Modifier.clickable { StockData.stocks.removeAt(ind) }
             )
         }
     }
