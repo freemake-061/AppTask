@@ -61,8 +61,13 @@ private fun Preview() {
     }
 }
 
-const val min = 0
-const val max = 9999
+class Constants {
+    companion object {
+        const val STOCK_QUANTITY_MIN = 0
+        const val STOCK_QUANTITY_MAX = 9999
+        const val CLOCK_FORMAT = "hh:mm:ss"
+    }
+}
 
 data class Stock(val clock: String, val quantity: Int, val comment: String)
 

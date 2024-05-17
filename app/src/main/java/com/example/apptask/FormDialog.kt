@@ -66,13 +66,13 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    var quantity by rememberSaveable { mutableIntStateOf(min) }
+                    var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
                     Text(text = stringResource(R.string.form_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
                         onClick = { quantity ++ },
                         enabled = when(quantity) {
-                            max -> false
+                            Constants.STOCK_QUANTITY_MAX -> false
                             else -> true
                         }
                     ) {
@@ -81,7 +81,7 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     ElevatedButton(
                         onClick = { quantity -- },
                         enabled = when(quantity) {
-                            min -> false
+                            Constants.STOCK_QUANTITY_MIN -> false
                             else -> true
                         }
                     ) {
@@ -92,14 +92,13 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val clockFormat = "hh:mm:ss"
                     val isDarkTheme = isSystemInDarkTheme()
                     AndroidView(
                         factory = { context ->
                             TextClock(context).apply {
-                                format12Hour?.let { this.format12Hour = clockFormat }
-                                format24Hour?.let { this.format24Hour = clockFormat }
-                                timeZone?.let {this.timeZone = null}
+                                format12Hour?.let { this.format12Hour = Constants.CLOCK_FORMAT }
+                                format24Hour?.let { this.format24Hour = Constants.CLOCK_FORMAT }
+                                timeZone?.let { this.timeZone = null }
                                 if (isDarkTheme) {
                                     setTextColor(context.getColor(R.color.white))
                                 }
