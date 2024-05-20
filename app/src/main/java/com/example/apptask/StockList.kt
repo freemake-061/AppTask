@@ -26,12 +26,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(ind: Int, stc: Stock) {
+fun StockCard(index: Int, stock: Stock) {
     var isChecked by rememberSaveable { mutableStateOf(false) }
     var cardColor = Color(0xFFFFFBFE)
     if (isChecked) {
         cardColor = Color(0xFF00FF00)
-    } else if (ind % 2 == 1) {
+    } else if (index % 2 == 1) {
         cardColor = Color(0xFFE6E6FA)
     }
     Box(
@@ -49,10 +49,10 @@ fun StockCard(ind: Int, stc: Stock) {
                 checked = isChecked,
                 onCheckedChange = { isChecked = !isChecked }
             )
-            Text(text = stc.clock)
-            Text(text = "%,d".format(stc.quantity))
+            Text(text = stock.clock)
+            Text(text = "%,d".format(stock.quantity))
             Text(
-                text = stc.comment,
+                text = stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -60,7 +60,7 @@ fun StockCard(ind: Int, stc: Stock) {
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = "Delete",
-                modifier = Modifier.clickable { StockData.stocks.removeAt(ind) }
+                modifier = Modifier.clickable { stocks.removeAt(index) }
             )
         }
     }

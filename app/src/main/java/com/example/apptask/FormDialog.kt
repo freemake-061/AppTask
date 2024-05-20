@@ -1,6 +1,8 @@
 package com.example.apptask
 
+import android.os.Build
 import android.widget.TextClock
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -40,6 +42,7 @@ import androidx.compose.ui.window.Dialog
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormDialog(setShowDialog: (Boolean) -> Unit) {
@@ -146,7 +149,7 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                             setShowDialog(false)
                             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
                             val currentTime = formatTime.format(LocalDateTime.now())
-                            StockData.stocks += Stock(
+                            stocks += Stock(
                                 clock = currentTime,
                                 quantity = quantity,
                                 comment = comment
