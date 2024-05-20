@@ -93,7 +93,14 @@ private fun Home() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(StockData.stocks)
+            StockList(stocks)
         }
     }
 }
+
+var stocks = mutableListOf(
+    Stock("00:00:00", 0, "コメント"),
+    Stock("00:00:00", 1, "コメント"),
+    Stock("00:00:00", 1000, "コメント"),
+    Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"),
+)
