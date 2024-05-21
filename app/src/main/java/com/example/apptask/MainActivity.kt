@@ -61,14 +61,6 @@ private fun Preview() {
     }
 }
 
-class Constants {
-    companion object {
-        const val STOCK_QUANTITY_MIN = 0
-        const val STOCK_QUANTITY_MAX = 9999
-        const val CLOCK_FORMAT = "hh:mm:ss"
-    }
-}
-
 data class Stock(val clock: String, val quantity: Int, val comment: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,14 +83,24 @@ private fun Home() {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { canShowDialog = true }) {
-                Icon(Icons.Default.Add, "Floating action button")
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Floating action button"
+                )
             }
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList()
+            StockList(stocks)
         }
     }
 }
+
+var stocks = mutableListOf(
+    Stock("00:00:00", 0, "コメント"),
+    Stock("00:00:00", 1, "コメント"),
+    Stock("00:00:00", 1000, "コメント"),
+    Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"),
+)
