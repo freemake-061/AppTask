@@ -125,8 +125,9 @@ var stocks = mutableStateListOf(
 private fun Menu() {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
-    if (canShowDialog)
+    if (canShowDialog) {
         SumDialog(setShowDialog = { canShowDialog = it })
+    }
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Filled.Menu,
