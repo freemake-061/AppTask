@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -113,7 +114,7 @@ private fun Home() {
     }
 }
 
-var stocks = mutableListOf(
+var stocks = mutableStateListOf(
     Stock("00:00:00", 0, "コメント"),
     Stock("00:00:00", 1, "コメント"),
     Stock("00:00:00", 1000, "コメント"),
