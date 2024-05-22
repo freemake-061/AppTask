@@ -145,7 +145,7 @@ private fun Menu() {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.menu_sum)) },
                 onClick = {
-                    expanded = false 
+                    expanded = false
                     canShowDialog = true
                 }
             )
