@@ -142,14 +142,14 @@ private fun Menu() {
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.menu_clear)) },
+                text = { Text(stringResource(R.string.menu_button_clear)) },
                 onClick = {
                     expanded = false
                     stocks.clear()
                 }
             )
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.menu_sum)) },
+                text = { Text(stringResource(R.string.menu_button_sum)) },
                 onClick = {
                     expanded = false
                     canShowDialog = true
@@ -164,11 +164,11 @@ private fun SumDialog(onDismissRequest: (Boolean) -> Unit) {
     AlertDialog(
         onDismissRequest = { onDismissRequest(false) },
         text = {
-            Text(stringResource(R.string.sum_message))
+            Text(stringResource(R.string.sum_label_message))
         },
         confirmButton = {
             TextButton(onClick = { onDismissRequest(false) }) {
-                Text(stringResource(R.string.sum_ok))
+                Text(stringResource(R.string.sum_button_ok))
             }
         }
     )

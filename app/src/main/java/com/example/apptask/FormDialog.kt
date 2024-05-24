@@ -63,7 +63,7 @@ fun FormDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(R.string.form_title),
+                        text = stringResource(R.string.form_label_title),
                         style = TextStyle(fontWeight = FontWeight.Bold)
                     )
                     Icon(
@@ -77,7 +77,7 @@ fun FormDialog(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(R.string.form_quantity) + "%,d".format(quantity))
+                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
                         onClick = { quantity ++ },
@@ -136,7 +136,7 @@ fun FormDialog(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = stringResource(R.string.form_placeHolder),
+                                        text = stringResource(R.string.form_placeholder),
                                         style = TextStyle(color = Color.Gray)
                                     )
                                 }
@@ -160,7 +160,7 @@ fun FormDialog(
                             )
                         }
                     ) {
-                        Text(text = stringResource(R.string.form_addButton))
+                        Text(text = stringResource(R.string.form_button_add))
                     }
                 }
             }
