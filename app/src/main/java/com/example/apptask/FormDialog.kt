@@ -154,6 +154,7 @@ fun FormDialog(
                             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
                             val currentTime = formatTime.format(LocalDateTime.now())
                             stocks += Stock(
+                                isChecked = false,
                                 clock = currentTime,
                                 quantity = quantity,
                                 comment = comment

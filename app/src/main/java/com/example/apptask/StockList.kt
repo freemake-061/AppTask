@@ -38,7 +38,10 @@ fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(color = cardColor)
-            .clickable { isChecked = !isChecked }
+            .clickable {
+                isChecked = !isChecked
+                aaa(isChecked)
+            }
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -70,7 +73,8 @@ fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
 fun StockList(stocks: List<Stock>) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock, aaa = {})
+            var bbb by rememberSaveable { mutableStateOf(false) }
+            StockCard(index, stock, aaa = { bbb = it })
         }
     }
 }

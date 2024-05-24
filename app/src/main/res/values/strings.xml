@@ -6,6 +6,6 @@
     <string name="form_placeholder">コメントを入力</string>
     <string name="menu_button_clear">全て削除</string>
     <string name="menu_button_sum">選択された数量を合計</string>
-    <string name="sum_label_message">合計xxxです</string>
+    <string name="sum_label_message">合計 %1$d です</string>
     <string name="sum_button_ok">OK</string>
 </resources>
