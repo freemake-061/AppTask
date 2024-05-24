@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(index: Int, stock: Stock) {
+fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
     var isChecked by rememberSaveable { mutableStateOf(false) }
     var cardColor = Color(0xFFFFFBFE)
     if (isChecked) {
@@ -70,7 +70,7 @@ fun StockCard(index: Int, stock: Stock) {
 fun StockList(stocks: List<Stock>) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock)
+            StockCard(index, stock, aaa = {})
         }
     }
 }

@@ -82,9 +82,9 @@ private fun Home() {
     var canShowDialog by rememberSaveable { mutableStateOf(true) }
     if (canShowDialog)
         FormDialog(
-            onDismissRequest = { canShowDialog = it },
-            onClickClose = { canShowDialog = it },
-            onClickAdd = { canShowDialog = it }
+            onDismissRequest = { canShowDialog = false },
+            onClickClose = { canShowDialog = false },
+            onClickAdd = { canShowDialog = false }
         )
     Scaffold(
         topBar = {
@@ -119,8 +119,8 @@ private fun Home() {
 }
 
 var stocks = mutableStateListOf(
-    Stock("00:00:00", 0, "コメント"),
-    Stock("00:00:00", 1, "コメント"),
+    Stock("00:00:00", 0,    "コメント"),
+    Stock("00:00:00", 1,    "コメント"),
     Stock("00:00:00", 1000, "コメント"),
     Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"),
 )
@@ -130,7 +130,7 @@ private fun Menu() {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
-        SumDialog(onDismissRequest = { canShowDialog = it })
+        SumDialog(onDismissRequest = { canShowDialog = false })
     }
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
@@ -160,14 +160,14 @@ private fun Menu() {
 }
 
 @Composable
-private fun SumDialog(onDismissRequest: (Boolean) -> Unit) {
+private fun SumDialog(onDismissRequest: () -> Unit) {
     AlertDialog(
-        onDismissRequest = { onDismissRequest(false) },
+        onDismissRequest = { onDismissRequest() },
         text = {
             Text(stringResource(R.string.sum_label_message))
         },
         confirmButton = {
-            TextButton(onClick = { onDismissRequest(false) }) {
+            TextButton(onClick = { onDismissRequest() }) {
                 Text(stringResource(R.string.sum_button_ok))
             }
         }

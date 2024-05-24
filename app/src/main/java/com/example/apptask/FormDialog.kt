@@ -46,11 +46,11 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormDialog(
-    onDismissRequest: (Boolean) -> Unit,
-    onClickClose: (Boolean) -> Unit,
-    onClickAdd: (Boolean) -> Unit
+    onDismissRequest: () -> Unit,
+    onClickClose: () -> Unit,
+    onClickAdd: () -> Unit
 ) {
-    Dialog(onDismissRequest = { onDismissRequest(false) }) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
         Surface {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -70,7 +70,7 @@ fun FormDialog(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Close",
                         tint = colorResource(android.R.color.darker_gray),
-                        modifier = Modifier.clickable { onClickClose(false) }
+                        modifier = Modifier.clickable { onClickClose() }
                     )
                 }
                 Row(
@@ -150,7 +150,7 @@ fun FormDialog(
                 ) {
                     Button(
                         onClick = {
-                            onClickAdd(false)
+                            onClickAdd()
                             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
                             val currentTime = formatTime.format(LocalDateTime.now())
                             stocks += Stock(
