@@ -1,6 +1,8 @@
 package com.example.apptask
 
+import android.os.Build
 import android.widget.TextClock
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -37,37 +39,45 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormDialog(setShowDialog: (Boolean) -> Unit) {
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+fun FormDialog(
+    onDismissRequest: () -> Unit,
+    onClickClose: () -> Unit,
+    onClickAdd: () -> Unit
+) {
+    Dialog(onDismissRequest = { onDismissRequest() }) {
         Surface {
             Column(
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
+                var comment by rememberSaveable { mutableStateOf("") }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(R.string.form_title),
+                        text = stringResource(R.string.form_label_title),
                         style = TextStyle(fontWeight = FontWeight.Bold)
                     )
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Close",
                         tint = colorResource(android.R.color.darker_gray),
-                        modifier = Modifier.clickable { setShowDialog(false) }
+                        modifier = Modifier.clickable { onClickClose() }
                     )
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
-                    Text(text = stringResource(R.string.form_quantity) + "%,d".format(quantity))
+                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
                         onClick = { quantity ++ },
@@ -105,7 +115,6 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                             }
                         }
                     )
-                    var comment by rememberSaveable { mutableStateOf("") }
                     BasicTextField(
                         modifier = Modifier.weight(1f),
                         value = comment,
@@ -127,7 +136,7 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = stringResource(R.string.form_placeHolder),
+                                        text = stringResource(R.string.form_placeholder),
                                         style = TextStyle(color = Color.Gray)
                                     )
                                 }
@@ -139,8 +148,19 @@ fun FormDialog(setShowDialog: (Boolean) -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = { setShowDialog(false) }) {
-                        Text(text = stringResource(R.string.form_addButton))
+                    Button(
+                        onClick = {
+                            onClickAdd()
+                            val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+                            val currentTime = formatTime.format(LocalDateTime.now())
+                            stocks += Stock(
+                                clock = currentTime,
+                                quantity = quantity,
+                                comment = comment
+                            )
+                        }
+                    ) {
+                        Text(text = stringResource(R.string.form_button_add))
                     }
                 }
             }

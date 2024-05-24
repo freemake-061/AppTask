@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">AppTask</string>
-    <string name="form_title">アイテムを追加</string>
-    <string name="form_quantity">数量：</string>
-    <string name="form_addButton">追加</string>
-    <string name="form_placeHolder">コメントを入力</string>
+    <string name="form_label_title">アイテムを追加</string>
+    <string name="form_label_quantity">数量：</string>
+    <string name="form_button_add">追加</string>
+    <string name="form_placeholder">コメントを入力</string>
+    <string name="menu_button_clear">全て削除</string>
+    <string name="menu_button_sum">選択された数量を合計</string>
+    <string name="sum_label_message">合計xxxです</string>
+    <string name="sum_button_ok">OK</string>
 </resources>
