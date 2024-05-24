@@ -81,7 +81,11 @@ data class Stock(val clock: String, val quantity: Int, val comment: String)
 private fun Home() {
     var canShowDialog by rememberSaveable { mutableStateOf(true) }
     if (canShowDialog)
-        FormDialog(setShowDialog = { canShowDialog = it })
+        FormDialog(
+            onDismissRequest = { canShowDialog = it },
+            onClickClose = { canShowDialog = it },
+            onClickAdd = { canShowDialog = it }
+        )
     Scaffold(
         topBar = {
             TopAppBar(
@@ -126,7 +130,7 @@ private fun Menu() {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
-        SumDialog(setShowDialog = { canShowDialog = it })
+        SumDialog(onDismissRequest = { canShowDialog = it })
     }
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
@@ -156,14 +160,14 @@ private fun Menu() {
 }
 
 @Composable
-private fun SumDialog(setShowDialog: (Boolean) -> Unit) {
+private fun SumDialog(onDismissRequest: (Boolean) -> Unit) {
     AlertDialog(
-        onDismissRequest = { setShowDialog(false) },
+        onDismissRequest = { onDismissRequest(false) },
         text = {
             Text(stringResource(R.string.sum_message))
         },
         confirmButton = {
-            TextButton(onClick = { setShowDialog(false) }) {
+            TextButton(onClick = { onDismissRequest(false) }) {
                 Text(stringResource(R.string.sum_ok))
             }
         }
