@@ -80,6 +80,9 @@ data class StockCardData(var isChecked: Boolean, val stock: Stock)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Home() {
+    var aaa by rememberSaveable {
+        mutableStateOf(stocks)
+    }
     var canShowDialog by rememberSaveable { mutableStateOf(true) }
     if (canShowDialog)
         FormDialog(
@@ -114,12 +117,12 @@ private fun Home() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(stocks)
+            StockList(aaa)
         }
     }
 }
 
-var stocks = mutableStateListOf(
+var stocks = listOf(
     StockCardData(false, Stock("00:00:00", 0,    "コメント")),
     StockCardData(false, Stock("00:00:00", 1,    "コメント")),
     StockCardData(false, Stock("00:00:00", 1000, "コメント")),

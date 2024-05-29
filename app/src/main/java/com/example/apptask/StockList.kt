@@ -26,10 +26,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(index: Int, stockCardData: StockCardData) {
+fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolean) -> Unit ) {
     var isChecked by rememberSaveable { mutableStateOf(false) }
     var cardColor = Color(0xFFFFFBFE)
-    if (isChecked) {
+    if (stockCardData.isChecked) {
         cardColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         cardColor = Color(0xFFE6E6FA)
@@ -47,7 +47,7 @@ fun StockCard(index: Int, stockCardData: StockCardData) {
         ) {
             Checkbox(
                 checked = isChecked,
-                onCheckedChange = { isChecked = !isChecked }
+                onCheckedChange = onCheckedChange
             )
             Text(text = stockCardData.stock.clock)
             Text(text = "%,d".format(stockCardData.stock.quantity))
@@ -70,7 +70,7 @@ fun StockCard(index: Int, stockCardData: StockCardData) {
 fun StockList(stocks: List<StockCardData>) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock)
+            StockCard(index, stock, onCheckedChange = )
         }
     }
 }
