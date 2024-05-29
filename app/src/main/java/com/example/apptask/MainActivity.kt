@@ -80,10 +80,8 @@ data class StockCardData(var isChecked: Boolean, val stock: Stock)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Home() {
-    var aaa by rememberSaveable {
-        mutableStateOf(stocks)
-    }
-    var canShowDialog by rememberSaveable { mutableStateOf(true) }
+    var aaa by rememberSaveable { mutableStateOf(stocks) }
+    var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog)
         FormDialog(
             onDismissRequest = { canShowDialog = false },
@@ -117,7 +115,9 @@ private fun Home() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(aaa)
+            StockList(aaa, onCheckedChange = { isChecked, index ->
+                aaa[index].isChecked = isChecked
+            })
         }
     }
 }
@@ -149,7 +149,7 @@ private fun Menu() {
                 text = { Text(stringResource(R.string.menu_button_clear)) },
                 onClick = {
                     expanded = false
-                    stocks.clear()
+                    //  後回し stocks.clear()
                 }
             )
             DropdownMenuItem(

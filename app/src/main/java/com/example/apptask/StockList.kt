@@ -26,8 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolean) -> Unit ) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
+fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolean) -> Unit) {
     var cardColor = Color(0xFFFFFBFE)
     if (stockCardData.isChecked) {
         cardColor = Color(0xFF00FF00)
@@ -38,7 +37,7 @@ fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolea
         modifier = Modifier
             .fillMaxWidth()
             .background(color = cardColor)
-            .clickable { isChecked = !isChecked }
+            .clickable { onCheckedChange(!stockCardData.isChecked) }
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -46,7 +45,7 @@ fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolea
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = isChecked,
+                checked = stockCardData.isChecked,
                 onCheckedChange = onCheckedChange
             )
             Text(text = stockCardData.stock.clock)
@@ -60,17 +59,17 @@ fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolea
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = "Delete",
-                modifier = Modifier.clickable { stocks.removeAt(index) }
+                // 後回し modifier = Modifier.clickable { stocks.removeAt(index) }
             )
         }
     }
 }
 
 @Composable
-fun StockList(stocks: List<StockCardData>) {
+fun StockList(stocks: List<StockCardData>, onCheckedChange: (Boolean, Int) -> Unit) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock, onCheckedChange = )
+            StockCard(index, stock) { onCheckedChange(it, index) }
         }
     }
 }
