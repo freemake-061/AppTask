@@ -73,7 +73,8 @@ private fun Preview() {
     }
 }
 
-data class Stock(var isChecked: Boolean, val clock: String, val quantity: Int, val comment: String)
+data class Stock(val clock: String, val quantity: Int, val comment: String)
+data class StockCardData(var isChecked: Boolean, val stock: Stock)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,17 +114,16 @@ private fun Home() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            var aaa by rememberSaveable { mutableStateOf(true) }
             StockList(stocks)
         }
     }
 }
 
 var stocks = mutableStateListOf(
-    Stock(false, "00:00:00", 0,    "コメント"),
-    Stock(false, "00:00:00", 1,    "コメント"),
-    Stock(false, "00:00:00", 1000, "コメント"),
-    Stock(false, "00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"),
+    StockCardData(false, Stock("00:00:00", 0,    "コメント")),
+    StockCardData(false, Stock("00:00:00", 1,    "コメント")),
+    StockCardData(false, Stock("00:00:00", 1000, "コメント")),
+    StockCardData(false, Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"))
 )
 
 @Composable
@@ -163,7 +163,7 @@ private fun Menu() {
 @Composable
 private fun SumDialog(onDismissRequest: () -> Unit) {
     val checkedStocks = stocks.filter { it.isChecked }
-    val sum = checkedStocks.sumOf { it.quantity }
+    val sum = checkedStocks.sumOf { it.stock.quantity }
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
         text = {

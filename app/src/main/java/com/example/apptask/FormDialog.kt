@@ -153,11 +153,13 @@ fun FormDialog(
                             onClickAdd()
                             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
                             val currentTime = formatTime.format(LocalDateTime.now())
-                            stocks += Stock(
+                            stocks += StockCardData(
                                 isChecked = false,
-                                clock = currentTime,
-                                quantity = quantity,
-                                comment = comment
+                                Stock(
+                                    clock = currentTime,
+                                    quantity = quantity,
+                                    comment = comment
+                                )
                             )
                         }
                     ) {

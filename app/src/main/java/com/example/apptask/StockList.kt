@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
+fun StockCard(index: Int, stockCardData: StockCardData) {
     var isChecked by rememberSaveable { mutableStateOf(false) }
     var cardColor = Color(0xFFFFFBFE)
     if (isChecked) {
@@ -38,10 +38,7 @@ fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(color = cardColor)
-            .clickable {
-                isChecked = !isChecked
-                aaa(isChecked)
-            }
+            .clickable { isChecked = !isChecked }
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -52,10 +49,10 @@ fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
                 checked = isChecked,
                 onCheckedChange = { isChecked = !isChecked }
             )
-            Text(text = stock.clock)
-            Text(text = "%,d".format(stock.quantity))
+            Text(text = stockCardData.stock.clock)
+            Text(text = "%,d".format(stockCardData.stock.quantity))
             Text(
-                text = stock.comment,
+                text = stockCardData.stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -70,11 +67,10 @@ fun StockCard(index: Int, stock: Stock, aaa: (Boolean) -> Unit) {
 }
 
 @Composable
-fun StockList(stocks: List<Stock>) {
+fun StockList(stocks: List<StockCardData>) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            var bbb by rememberSaveable { mutableStateOf(false) }
-            StockCard(index, stock, aaa = { bbb = it })
+            StockCard(index, stock)
         }
     }
 }
