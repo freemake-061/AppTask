@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -54,7 +55,7 @@ fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolea
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Delete",
+                contentDescription = stringResource(R.string.form_button_desc_delete),
                 // 後回し modifier = Modifier.clickable { stocks.removeAt(index) }
             )
         }

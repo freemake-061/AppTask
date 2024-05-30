@@ -68,7 +68,7 @@ fun FormDialog(
                     )
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.form_button_desc_close),
                         tint = colorResource(android.R.color.darker_gray),
                         modifier = Modifier.clickable { onClickClose() }
                     )
@@ -86,7 +86,7 @@ fun FormDialog(
                             else -> true
                         }
                     ) {
-                        Text(text = "+")
+                        Text(text = stringResource(R.string.form_button_plus))
                     }
                     ElevatedButton(
                         onClick = { quantity -- },
@@ -95,7 +95,7 @@ fun FormDialog(
                             else -> true
                         }
                     ) {
-                        Text(text = "-")
+                        Text(text = stringResource(R.string.form_button_minus))
                     }
                 }
                 Row(
@@ -157,8 +157,8 @@ fun FormDialog(
                                     isChecked = false,
                                     Stock(
                                         clock = currentTime,
-                                        quantity = 1,
-                                        comment = "test comment"
+                                        quantity = quantity,
+                                        comment = comment
                                     )
                                 )
                             )

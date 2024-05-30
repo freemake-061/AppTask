@@ -79,17 +79,18 @@ data class StockCardData(var isChecked: Boolean, val stock: Stock)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Home() {
-    var aaa by rememberSaveable { mutableStateOf(stocks) }
+    var stocks by rememberSaveable { mutableStateOf(initialStocks) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
-    if (canShowDialog)
+    if (canShowDialog) {
         FormDialog(
             onDismissRequest = { canShowDialog = false },
             onClickClose = { canShowDialog = false },
-            onClickAdd = { bbb ->
+            onClickAdd = { stock ->
                 canShowDialog = false
-                aaa += bbb
+                stocks += stock
             }
         )
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -98,7 +99,7 @@ private fun Home() {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text(text = "Home")
+                    Text(stringResource(R.string.home_topbar_title))
                 },
                 actions = {
                     Menu()
@@ -109,7 +110,7 @@ private fun Home() {
             FloatingActionButton(onClick = { canShowDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Floating action button"
+                    contentDescription = stringResource(R.string.home_button_desc_add)
                 )
             }
         }
@@ -118,9 +119,9 @@ private fun Home() {
             modifier = Modifier.padding(innerPadding)
         ) {
             StockList(
-                stocks = aaa,
+                stocks = stocks,
                 onCheckedChange = { index, isChecked ->
-                    aaa = aaa.toMutableList().also {
+                    stocks = stocks.toMutableList().also {
                         it[index] = it[index].copy(isChecked = isChecked)
                     }
                 }
@@ -129,7 +130,7 @@ private fun Home() {
     }
 }
 
-var stocks = listOf(
+var initialStocks = listOf(
     StockCardData(false, Stock("00:00:00", 0,    "コメント")),
     StockCardData(false, Stock("00:00:00", 1,    "コメント")),
     StockCardData(false, Stock("00:00:00", 1000, "コメント")),
@@ -146,7 +147,7 @@ private fun Menu() {
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Filled.Menu,
-            contentDescription = "Menu"
+            contentDescription = stringResource(R.string.home_button_desc_menu)
         )
         DropdownMenu(
             expanded = expanded,
@@ -172,13 +173,14 @@ private fun Menu() {
 
 @Composable
 private fun SumDialog(onDismissRequest: () -> Unit) {
+    /*
+    後回し
     val checkedStocks = stocks.filter { it.isChecked }
     val sum = checkedStocks.sumOf { it.stock.quantity }
+     */
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
-        text = {
-            Text(stringResource(R.string.sum_label_message, sum))
-        },
+        text = { Text(stringResource(R.string.sum_label_message, 0)) },
         confirmButton = {
             TextButton(onClick = { onDismissRequest() }) {
                 Text(stringResource(R.string.sum_button_ok))
