@@ -15,10 +15,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -66,10 +62,10 @@ fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolea
 }
 
 @Composable
-fun StockList(stocks: List<StockCardData>, onCheckedChange: (Boolean, Int) -> Unit) {
+fun StockList(stocks: List<StockCardData>, onCheckedChange: (Int, Boolean) -> Unit) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock) { onCheckedChange(it, index) }
+            StockCard(index, stock) { onCheckedChange(index, it) }
         }
     }
 }

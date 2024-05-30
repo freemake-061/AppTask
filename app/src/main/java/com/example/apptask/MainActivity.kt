@@ -28,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -86,7 +85,10 @@ private fun Home() {
         FormDialog(
             onDismissRequest = { canShowDialog = false },
             onClickClose = { canShowDialog = false },
-            onClickAdd = { canShowDialog = false }
+            onClickAdd = { bbb ->
+                canShowDialog = false
+                aaa += bbb
+            }
         )
     Scaffold(
         topBar = {
@@ -115,9 +117,14 @@ private fun Home() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(aaa, onCheckedChange = { isChecked, index ->
-                aaa[index].isChecked = isChecked
-            })
+            StockList(
+                stocks = aaa,
+                onCheckedChange = { index, isChecked ->
+                    aaa = aaa.toMutableList().also {
+                        it[index] = it[index].copy(isChecked = isChecked)
+                    }
+                }
+            )
         }
     }
 }
