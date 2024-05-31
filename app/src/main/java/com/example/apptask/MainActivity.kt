@@ -74,13 +74,13 @@ private fun Preview() {
 }
 
 data class Stock(val clock: String, val quantity: Int, val comment: String)
-data class StockCardData(var isChecked: Boolean, val stock: Stock)
+data class StockRowData(var isChecked: Boolean, val stock: Stock)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Home() {
-    var stocks by rememberSaveable { mutableStateOf(initialStocks) }
+    var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
         FormDialog(
@@ -88,7 +88,7 @@ private fun Home() {
             onClickClose = { canShowDialog = false },
             onClickAdd = { stock ->
                 canShowDialog = false
-                stocks += stock
+                stockRowList += stock
             }
         )
     }
@@ -105,7 +105,7 @@ private fun Home() {
                 actions = {
                     Menu(
                         onClickClear = {
-                            stocks = stocks.toMutableList().also {
+                            stockRowList = stockRowList.toMutableList().also {
                                 it.clear()
                             }
                         }
@@ -126,14 +126,14 @@ private fun Home() {
             modifier = Modifier.padding(innerPadding)
         ) {
             StockList(
-                stocks = stocks,
+                stockRowList = stockRowList,
                 onCheckedChange = { index, isChecked ->
-                    stocks = stocks.toMutableList().also {
+                    stockRowList = stockRowList.toMutableList().also {
                         it[index] = it[index].copy(isChecked = isChecked)
                     }
                 },
                 onClickDelete = { index ->
-                    stocks = stocks.toMutableList().also {
+                    stockRowList = stockRowList.toMutableList().also {
                         it.removeAt(index)
                     }
                 }
@@ -143,10 +143,10 @@ private fun Home() {
 }
 
 var initialStocks = listOf(
-    StockCardData(false, Stock("00:00:00", 0,    "コメント")),
-    StockCardData(false, Stock("00:00:00", 1,    "コメント")),
-    StockCardData(false, Stock("00:00:00", 1000, "コメント")),
-    StockCardData(false, Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"))
+    StockRowData(false, Stock("00:00:00", 0,    "コメント")),
+    StockRowData(false, Stock("00:00:00", 1,    "コメント")),
+    StockRowData(false, Stock("00:00:00", 1000, "コメント")),
+    StockRowData(false, Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"))
 )
 
 @Composable

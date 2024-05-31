@@ -25,12 +25,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StockCard(
     index: Int,
-    stockCardData: StockCardData,
+    stockRowData: StockRowData,
     onCheckedChange: (Boolean) -> Unit,
     onClickDelete: () -> Unit
 ) {
     var cardColor = Color(0xFFFFFBFE)
-    if (stockCardData.isChecked) {
+    if (stockRowData.isChecked) {
         cardColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         cardColor = Color(0xFFE6E6FA)
@@ -39,7 +39,7 @@ fun StockCard(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = cardColor)
-            .clickable { onCheckedChange(!stockCardData.isChecked) }
+            .clickable { onCheckedChange(!stockRowData.isChecked) }
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -47,13 +47,13 @@ fun StockCard(
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = stockCardData.isChecked,
+                checked = stockRowData.isChecked,
                 onCheckedChange = onCheckedChange
             )
-            Text(text = stockCardData.stock.clock)
-            Text(text = "%,d".format(stockCardData.stock.quantity))
+            Text(text = stockRowData.stock.clock)
+            Text(text = "%,d".format(stockRowData.stock.quantity))
             Text(
-                text = stockCardData.stock.comment,
+                text = stockRowData.stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -69,15 +69,15 @@ fun StockCard(
 
 @Composable
 fun StockList(
-    stocks: List<StockCardData>,
+    stockRowList: List<StockRowData>,
     onCheckedChange: (Int, Boolean) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(stocks) { index, stock ->
+        itemsIndexed(stockRowList) { index, stockRowData ->
             StockCard(
                 index = index,
-                stockCardData = stock,
+                stockRowData = stockRowData,
                 onCheckedChange = { isChecked ->
                     onCheckedChange(index, isChecked)
                 },
