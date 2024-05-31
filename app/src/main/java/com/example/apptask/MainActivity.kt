@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.apptask.ui.theme.AppTaskTheme
+import android.util.Log
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -102,7 +103,13 @@ private fun Home() {
                     Text(stringResource(R.string.home_topbar_title))
                 },
                 actions = {
-                    Menu()
+                    Menu(
+                        onClickClear = {
+                            stocks = stocks.toMutableList().also {
+                                it.clear()
+                            }
+                        }
+                    )
                 }
             )
         },
@@ -124,6 +131,11 @@ private fun Home() {
                     stocks = stocks.toMutableList().also {
                         it[index] = it[index].copy(isChecked = isChecked)
                     }
+                },
+                onClickDelete = { index ->
+                    stocks = stocks.toMutableList().also {
+                        it.removeAt(index)
+                    }
                 }
             )
         }
@@ -138,7 +150,7 @@ var initialStocks = listOf(
 )
 
 @Composable
-private fun Menu() {
+private fun Menu(onClickClear: () -> Unit) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
@@ -157,7 +169,7 @@ private fun Menu() {
                 text = { Text(stringResource(R.string.menu_button_clear)) },
                 onClick = {
                     expanded = false
-                    //  後回し stocks.clear()
+                    onClickClear()
                 }
             )
             DropdownMenuItem(

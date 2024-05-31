@@ -23,7 +23,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolean) -> Unit) {
+fun StockCard(
+    index: Int,
+    stockCardData: StockCardData,
+    onCheckedChange: (Boolean) -> Unit,
+    onClickDelete: () -> Unit
+) {
     var cardColor = Color(0xFFFFFBFE)
     if (stockCardData.isChecked) {
         cardColor = Color(0xFF00FF00)
@@ -56,17 +61,28 @@ fun StockCard(index: Int, stockCardData: StockCardData, onCheckedChange: (Boolea
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.form_button_desc_delete),
-                // 後回し modifier = Modifier.clickable { stocks.removeAt(index) }
+                modifier = Modifier.clickable { onClickDelete() }
             )
         }
     }
 }
 
 @Composable
-fun StockList(stocks: List<StockCardData>, onCheckedChange: (Int, Boolean) -> Unit) {
+fun StockList(
+    stocks: List<StockCardData>,
+    onCheckedChange: (Int, Boolean) -> Unit,
+    onClickDelete: (Int) -> Unit
+) {
     LazyColumn {
         itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock) { onCheckedChange(index, it) }
+            StockCard(
+                index = index,
+                stockCardData = stock,
+                onCheckedChange = { isChecked ->
+                    onCheckedChange(index, isChecked)
+                },
+                onClickDelete = { onClickDelete(index) }
+            )
         }
     }
 }
