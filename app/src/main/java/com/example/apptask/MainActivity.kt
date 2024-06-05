@@ -108,7 +108,8 @@ private fun Home() {
                             stockRowList = stockRowList.toMutableList().also {
                                 it.clear()
                             }
-                        }
+                        },
+                        stockRowData = stockRowList
                     )
                 }
             )
@@ -150,11 +151,14 @@ var initialStocks = listOf(
 )
 
 @Composable
-private fun Menu(onClickClear: () -> Unit) {
+private fun Menu(onClickClear: () -> Unit, stockRowData: List<StockRowData>) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
-        SumDialog(onDismissRequest = { canShowDialog = false })
+        SumDialog(
+            stockRowData = stockRowData,
+            onDismissRequest = { canShowDialog = false }
+        )
     }
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
@@ -184,15 +188,15 @@ private fun Menu(onClickClear: () -> Unit) {
 }
 
 @Composable
-private fun SumDialog(onDismissRequest: () -> Unit) {
-    /*
-    後回し
-    val checkedStocks = stocks.filter { it.isChecked }
-    val sum = checkedStocks.sumOf { it.stock.quantity }
-     */
+private fun SumDialog(
+    stockRowData: List<StockRowData>,
+    onDismissRequest: () -> Unit
+) {
+    val isCheckedStocks = stockRowData.filter { it.isChecked }
+    val sum = isCheckedStocks.sumOf { it.stock.quantity }
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
-        text = { Text(stringResource(R.string.sum_label_message, 0)) },
+        text = { Text(stringResource(R.string.sum_label_message, sum)) },
         confirmButton = {
             TextButton(onClick = { onDismissRequest() }) {
                 Text(stringResource(R.string.sum_button_ok))
