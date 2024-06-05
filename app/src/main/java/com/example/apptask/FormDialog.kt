@@ -48,7 +48,7 @@ import java.time.format.DateTimeFormatter
 fun FormDialog(
     onDismissRequest: () -> Unit,
     onClickClose: () -> Unit,
-    onClickAdd: () -> Unit
+    onClickAdd: (StockRowData) -> Unit
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Surface {
@@ -68,7 +68,7 @@ fun FormDialog(
                     )
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.form_button_desc_close),
                         tint = colorResource(android.R.color.darker_gray),
                         modifier = Modifier.clickable { onClickClose() }
                     )
@@ -86,7 +86,7 @@ fun FormDialog(
                             else -> true
                         }
                     ) {
-                        Text(text = "+")
+                        Text(text = stringResource(R.string.form_button_plus))
                     }
                     ElevatedButton(
                         onClick = { quantity -- },
@@ -95,7 +95,7 @@ fun FormDialog(
                             else -> true
                         }
                     ) {
-                        Text(text = "-")
+                        Text(text = stringResource(R.string.form_button_minus))
                     }
                 }
                 Row(
@@ -150,13 +150,17 @@ fun FormDialog(
                 ) {
                     Button(
                         onClick = {
-                            onClickAdd()
                             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
                             val currentTime = formatTime.format(LocalDateTime.now())
-                            stocks += Stock(
-                                clock = currentTime,
-                                quantity = quantity,
-                                comment = comment
+                            onClickAdd(
+                                StockRowData(
+                                    isChecked = false,
+                                    Stock(
+                                        clock = currentTime,
+                                        quantity = quantity,
+                                        comment = comment
+                                    )
+                                )
                             )
                         }
                     ) {

@@ -1,11 +1,23 @@
 <resources>
     <string name="app_name">AppTask</string>
+
+    <string name="home_topbar_title">ホーム</string>
+    <string name="home_button_desc_menu">メニュー</string>
+    <string name="home_button_desc_add">フォームの表示</string>
+
     <string name="form_label_title">アイテムを追加</string>
     <string name="form_label_quantity">数量：</string>
+    <string name="form_button_desc_close">閉じる</string>
+    <string name="form_button_plus">+</string>
+    <string name="form_button_minus">-</string>
     <string name="form_button_add">追加</string>
     <string name="form_placeholder">コメントを入力</string>
+
     <string name="menu_button_clear">全て削除</string>
     <string name="menu_button_sum">選択された数量を合計</string>
-    <string name="sum_label_message">合計xxxです</string>
+
+    <string name="sum_label_message">合計 %1$d です</string>
     <string name="sum_button_ok">OK</string>
+
+    <string name="form_button_desc_delete">削除</string>
 </resources>

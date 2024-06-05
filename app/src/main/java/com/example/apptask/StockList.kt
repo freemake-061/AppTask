@@ -15,21 +15,22 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun StockCard(index: Int, stock: Stock) {
-    var isChecked by rememberSaveable { mutableStateOf(false) }
+fun StockCard(
+    index: Int,
+    stockRowData: StockRowData,
+    onCheckedChange: (Boolean) -> Unit,
+    onClickDelete: () -> Unit
+) {
     var cardColor = Color(0xFFFFFBFE)
-    if (isChecked) {
+    if (stockRowData.isChecked) {
         cardColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         cardColor = Color(0xFFE6E6FA)
@@ -38,7 +39,7 @@ fun StockCard(index: Int, stock: Stock) {
         modifier = Modifier
             .fillMaxWidth()
             .background(color = cardColor)
-            .clickable { isChecked = !isChecked }
+            .clickable { onCheckedChange(!stockRowData.isChecked) }
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -46,31 +47,42 @@ fun StockCard(index: Int, stock: Stock) {
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = isChecked,
-                onCheckedChange = { isChecked = !isChecked }
+                checked = stockRowData.isChecked,
+                onCheckedChange = onCheckedChange
             )
-            Text(text = stock.clock)
-            Text(text = "%,d".format(stock.quantity))
+            Text(text = stockRowData.stock.clock)
+            Text(text = "%,d".format(stockRowData.stock.quantity))
             Text(
-                text = stock.comment,
+                text = stockRowData.stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = "Delete",
-                modifier = Modifier.clickable { stocks.removeAt(index) }
+                contentDescription = stringResource(R.string.form_button_desc_delete),
+                modifier = Modifier.clickable { onClickDelete() }
             )
         }
     }
 }
 
 @Composable
-fun StockList(stocks: List<Stock>) {
+fun StockList(
+    stockRowList: List<StockRowData>,
+    onCheckedChange: (Int, Boolean) -> Unit,
+    onClickDelete: (Int) -> Unit
+) {
     LazyColumn {
-        itemsIndexed(stocks) { index, stock ->
-            StockCard(index, stock)
+        itemsIndexed(stockRowList) { index, stockRowData ->
+            StockCard(
+                index = index,
+                stockRowData = stockRowData,
+                onCheckedChange = { isChecked ->
+                    onCheckedChange(index, isChecked)
+                },
+                onClickDelete = { onClickDelete(index) }
+            )
         }
     }
 }

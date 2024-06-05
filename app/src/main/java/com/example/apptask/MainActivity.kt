@@ -28,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -36,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.apptask.ui.theme.AppTaskTheme
+import android.util.Log
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -74,18 +74,24 @@ private fun Preview() {
 }
 
 data class Stock(val clock: String, val quantity: Int, val comment: String)
+data class StockRowData(var isChecked: Boolean, val stock: Stock)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Home() {
-    var canShowDialog by rememberSaveable { mutableStateOf(true) }
-    if (canShowDialog)
+    var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
+    var canShowDialog by rememberSaveable { mutableStateOf(false) }
+    if (canShowDialog) {
         FormDialog(
             onDismissRequest = { canShowDialog = false },
             onClickClose = { canShowDialog = false },
-            onClickAdd = { canShowDialog = false }
+            onClickAdd = { stock ->
+                canShowDialog = false
+                stockRowList += stock
+            }
         )
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -94,10 +100,16 @@ private fun Home() {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text(text = "Home")
+                    Text(stringResource(R.string.home_topbar_title))
                 },
                 actions = {
-                    Menu()
+                    Menu(
+                        onClickClear = {
+                            stockRowList = stockRowList.toMutableList().also {
+                                it.clear()
+                            }
+                        }
+                    )
                 }
             )
         },
@@ -105,7 +117,7 @@ private fun Home() {
             FloatingActionButton(onClick = { canShowDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Floating action button"
+                    contentDescription = stringResource(R.string.home_button_desc_add)
                 )
             }
         }
@@ -113,20 +125,32 @@ private fun Home() {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(stocks)
+            StockList(
+                stockRowList = stockRowList,
+                onCheckedChange = { index, isChecked ->
+                    stockRowList = stockRowList.toMutableList().also {
+                        it[index] = it[index].copy(isChecked = isChecked)
+                    }
+                },
+                onClickDelete = { index ->
+                    stockRowList = stockRowList.toMutableList().also {
+                        it.removeAt(index)
+                    }
+                }
+            )
         }
     }
 }
 
-var stocks = mutableStateListOf(
-    Stock("00:00:00", 0, "コメント"),
-    Stock("00:00:00", 1, "コメント"),
-    Stock("00:00:00", 1000, "コメント"),
-    Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"),
+var initialStocks = listOf(
+    StockRowData(false, Stock("00:00:00", 0,    "コメント")),
+    StockRowData(false, Stock("00:00:00", 1,    "コメント")),
+    StockRowData(false, Stock("00:00:00", 1000, "コメント")),
+    StockRowData(false, Stock("00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"))
 )
 
 @Composable
-private fun Menu() {
+private fun Menu(onClickClear: () -> Unit) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
@@ -135,7 +159,7 @@ private fun Menu() {
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Filled.Menu,
-            contentDescription = "Menu"
+            contentDescription = stringResource(R.string.home_button_desc_menu)
         )
         DropdownMenu(
             expanded = expanded,
@@ -145,7 +169,7 @@ private fun Menu() {
                 text = { Text(stringResource(R.string.menu_button_clear)) },
                 onClick = {
                     expanded = false
-                    stocks.clear()
+                    onClickClear()
                 }
             )
             DropdownMenuItem(
@@ -161,11 +185,14 @@ private fun Menu() {
 
 @Composable
 private fun SumDialog(onDismissRequest: () -> Unit) {
+    /*
+    後回し
+    val checkedStocks = stocks.filter { it.isChecked }
+    val sum = checkedStocks.sumOf { it.stock.quantity }
+     */
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
-        text = {
-            Text(stringResource(R.string.sum_label_message))
-        },
+        text = { Text(stringResource(R.string.sum_label_message, 0)) },
         confirmButton = {
             TextButton(onClick = { onDismissRequest() }) {
                 Text(stringResource(R.string.sum_button_ok))
