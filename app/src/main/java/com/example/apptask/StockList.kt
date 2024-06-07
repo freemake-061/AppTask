@@ -1,7 +1,9 @@
 package com.example.apptask
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,11 +24,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StockCard(
     index: Int,
     stockRowData: StockRowData,
     onCheckedChange: (Boolean) -> Unit,
+    onClickStock: () -> Unit,
     onClickDelete: () -> Unit
 ) {
     var cardColor = Color(0xFFFFFBFE)
@@ -39,7 +43,10 @@ fun StockCard(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = cardColor)
-            .clickable { onCheckedChange(!stockRowData.isChecked) }
+            .combinedClickable(
+                onClick = { onClickStock() },
+                onLongClick = { onCheckedChange(!stockRowData.isChecked) }
+            )
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -71,6 +78,7 @@ fun StockCard(
 fun StockList(
     stockRowList: List<StockRowData>,
     onCheckedChange: (Int, Boolean) -> Unit,
+    onClickStock: () -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
@@ -81,6 +89,7 @@ fun StockList(
                 onCheckedChange = { isChecked ->
                     onCheckedChange(index, isChecked)
                 },
+                onClickStock = { onClickStock() },
                 onClickDelete = { onClickDelete(index) }
             )
         }
