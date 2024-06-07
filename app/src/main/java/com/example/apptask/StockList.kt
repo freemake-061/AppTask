@@ -45,7 +45,10 @@ fun StockCard(
             .background(color = cardColor)
             .combinedClickable(
                 onClick = { onClickStock() },
+                /*
+                後で選択に関すること変更
                 onLongClick = { onCheckedChange(!stockRowData.isChecked) }
+                 */
             )
     ) {
         Row(

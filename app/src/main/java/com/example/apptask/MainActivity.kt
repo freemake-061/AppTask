@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                             exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
                         ) {
                             Home(
-                                onNavigateToConversation = { navController.navigate("StockDetail") }
+                                onNavigateToStockDetail = { navController.navigate("StockDetail") }
                             )
                         }
                         composable(
@@ -68,7 +68,7 @@ private fun Preview() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navController = rememberNavController()
-            Home(onNavigateToConversation = { navController.navigate("StockDetail") })
+            Home(onNavigateToStockDetail = { navController.navigate("StockDetail") })
         }
     }
 }

@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(onNavigateToConversation: () -> Unit) {
+fun Home(onNavigateToStockDetail: () -> Unit) {
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
@@ -85,7 +85,7 @@ fun Home(onNavigateToConversation: () -> Unit) {
                         it[index] = it[index].copy(isChecked = isChecked)
                     }
                 },
-                onClickStock = { onNavigateToConversation() },
+                onClickStock = { onNavigateToStockDetail() },
                 onClickDelete = { index ->
                     stockRowList = stockRowList.toMutableList().also {
                         it.removeAt(index)
