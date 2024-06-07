@@ -61,7 +61,7 @@ fun Home(onNavigateToStockDetail: (Stock) -> Unit) {
                                 it.clear()
                             }
                         },
-                        stockRowData = stockRowList
+                        stockRowList = stockRowList
                     )
                 }
             )
@@ -99,12 +99,12 @@ fun Home(onNavigateToStockDetail: (Stock) -> Unit) {
 }
 
 @Composable
-private fun Menu(onClickClear: () -> Unit, stockRowData: List<StockRowData>) {
+private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
         SumDialog(
-            stockRowData = stockRowData,
+            stockRowList = stockRowList,
             onDismissRequest = { canShowDialog = false }
         )
     }
@@ -137,10 +137,10 @@ private fun Menu(onClickClear: () -> Unit, stockRowData: List<StockRowData>) {
 
 @Composable
 private fun SumDialog(
-    stockRowData: List<StockRowData>,
+    stockRowList: List<StockRowData>,
     onDismissRequest: () -> Unit
 ) {
-    val isCheckedStocks = stockRowData.filter { it.isChecked }
+    val isCheckedStocks = stockRowList.filter { it.isChecked }
     val sum = isCheckedStocks.sumOf { it.stock.quantity }
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
