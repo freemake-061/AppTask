@@ -26,23 +26,23 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StockCard(
+fun StockRow(
     index: Int,
     stockRowData: StockRowData,
     onCheckedChange: (Boolean) -> Unit,
     onClickStock: (Stock) -> Unit,
     onClickDelete: () -> Unit
 ) {
-    var cardColor = Color(0xFFFFFBFE)
+    var rowColor = Color(0xFFFFFBFE)
     if (stockRowData.isChecked) {
-        cardColor = Color(0xFF00FF00)
+        rowColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
-        cardColor = Color(0xFFE6E6FA)
+        rowColor = Color(0xFFE6E6FA)
     }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = cardColor)
+            .background(color = rowColor)
             .combinedClickable(
                 onClick = { onClickStock(stockRowData.stock) },
                 /*
@@ -86,7 +86,7 @@ fun StockList(
 ) {
     LazyColumn {
         itemsIndexed(stockRowList) { index, stockRowData ->
-            StockCard(
+            StockRow(
                 index = index,
                 stockRowData = stockRowData,
                 onCheckedChange = { isChecked ->
