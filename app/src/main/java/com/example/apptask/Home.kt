@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(onNavigateToStockDetail: () -> Unit) {
+fun Home(onNavigateToStockDetail: (Stock) -> Unit) {
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
@@ -49,7 +49,7 @@ fun Home(onNavigateToStockDetail: () -> Unit) {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 title = {
                     Text(stringResource(R.string.home_topbar_title))
@@ -85,7 +85,9 @@ fun Home(onNavigateToStockDetail: () -> Unit) {
                         it[index] = it[index].copy(isChecked = isChecked)
                     }
                 },
-                onClickStock = { onNavigateToStockDetail() },
+                onClickStock = { stock ->
+                    onNavigateToStockDetail(stock)
+                },
                 onClickDelete = { index ->
                     stockRowList = stockRowList.toMutableList().also {
                         it.removeAt(index)

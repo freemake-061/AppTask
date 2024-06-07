@@ -1,5 +1,6 @@
 package com.example.apptask
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -13,12 +14,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.apptask.ui.theme.AppTaskTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,15 +37,26 @@ class MainActivity : ComponentActivity() {
                             exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
                         ) {
                             Home(
-                                onNavigateToStockDetail = { navController.navigate("StockDetail") }
+                                onNavigateToStockDetail = { stock ->
+                                    navController.navigate("StockDetail/${stock.clock}/${stock.quantity}/${stock.comment}")
+                                }
                             )
                         }
                         composable(
-                            route = "StockDetail",
+                            route = "StockDetail/{clock}/{quantity}/{comment}",
+                            arguments = listOf(
+                                navArgument("clock") { type = NavType.StringType },
+                                navArgument("quantity") { type = NavType.IntType },
+                                navArgument("comment") { type = NavType.StringType }
+                            ),
                             enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
                             exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
-                        ) {
-                            StockDetail()
+                        ) { backStackEntry ->
+                            val clock = backStackEntry.arguments?.getString("clock")
+                            val quantity = backStackEntry.arguments?.getInt("quantity")
+                            val comment = backStackEntry.arguments?.getString("comment")
+                            if (clock != null && quantity != null && comment != null)
+                            StockDetail(Stock(clock, quantity, comment))
                         }
                     }
                 }

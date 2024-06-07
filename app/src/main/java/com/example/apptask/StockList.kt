@@ -30,7 +30,7 @@ fun StockCard(
     index: Int,
     stockRowData: StockRowData,
     onCheckedChange: (Boolean) -> Unit,
-    onClickStock: () -> Unit,
+    onClickStock: (Stock) -> Unit,
     onClickDelete: () -> Unit
 ) {
     var cardColor = Color(0xFFFFFBFE)
@@ -44,9 +44,9 @@ fun StockCard(
             .fillMaxWidth()
             .background(color = cardColor)
             .combinedClickable(
-                onClick = { onClickStock() },
+                onClick = { onClickStock(stockRowData.stock) },
                 /*
-                後で選択に関すること変更
+                後で長押しで選択モードにする
                 onLongClick = { onCheckedChange(!stockRowData.isChecked) }
                  */
             )
@@ -81,7 +81,7 @@ fun StockCard(
 fun StockList(
     stockRowList: List<StockRowData>,
     onCheckedChange: (Int, Boolean) -> Unit,
-    onClickStock: () -> Unit,
+    onClickStock: (Stock) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
@@ -92,7 +92,7 @@ fun StockList(
                 onCheckedChange = { isChecked ->
                     onCheckedChange(index, isChecked)
                 },
-                onClickStock = { onClickStock() },
+                onClickStock = onClickStock,
                 onClickDelete = { onClickDelete(index) }
             )
         }
