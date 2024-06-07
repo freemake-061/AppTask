@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -25,12 +27,22 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "Home") {
-                        composable(route = "Home") {
+                        composable(
+                            route = "Home",
+                            enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth}) },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
+                        ) {
                             Home(
                                 onNavigateToConversation = { navController.navigate("StockDetail") }
                             )
                         }
-                        composable(route = "StockDetail") { StockDetail() }
+                        composable(
+                            route = "StockDetail",
+                            enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
+                            exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
+                        ) {
+                            StockDetail()
+                        }
                     }
                 }
             }
@@ -56,14 +68,7 @@ private fun Preview() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "Home") {
-                composable(route = "Home") {
-                    Home(
-                        onNavigateToConversation = { navController.navigate("StockDetail") }
-                    )
-                }
-                composable(route = "StockDetail") { StockDetail() }
-            }
+            Home(onNavigateToConversation = { navController.navigate("StockDetail") })
         }
     }
 }
