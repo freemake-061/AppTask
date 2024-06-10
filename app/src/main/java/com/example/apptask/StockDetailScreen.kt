@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StockDetail(stock: Stock) {
+fun StockDetailScreen(stock: Stock) {
     Scaffold(
         topBar = {
             TopAppBar(

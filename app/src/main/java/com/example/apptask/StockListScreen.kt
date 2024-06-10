@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(onNavigateToStockDetail: (Stock) -> Unit) {
+fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     var canShowDialog by rememberSaveable { mutableStateOf(false) }
     if (canShowDialog) {
@@ -86,7 +86,7 @@ fun Home(onNavigateToStockDetail: (Stock) -> Unit) {
                     }
                 },
                 onClickStock = { stock ->
-                    onNavigateToStockDetail(stock)
+                    onNavigateToScreen(Route.StockDetailScreen(stock))
                 },
                 onClickDelete = { index ->
                     stockRowList = stockRowList.toMutableList().also {
