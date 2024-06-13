@@ -1,7 +1,9 @@
 package com.example.apptask
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,24 +24,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StockCard(
+fun StockRow(
     index: Int,
     stockRowData: StockRowData,
     onCheckedChange: (Boolean) -> Unit,
+    onClickStock: (Stock) -> Unit,
     onClickDelete: () -> Unit
 ) {
-    var cardColor = Color(0xFFFFFBFE)
+    var rowColor = Color(0xFFFFFBFE)
     if (stockRowData.isChecked) {
-        cardColor = Color(0xFF00FF00)
+        rowColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
-        cardColor = Color(0xFFE6E6FA)
+        rowColor = Color(0xFFE6E6FA)
     }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = cardColor)
-            .clickable { onCheckedChange(!stockRowData.isChecked) }
+            .background(color = rowColor)
+            .combinedClickable(
+                onClick = { onClickStock(stockRowData.stock) },
+                /*
+                後で長押しで選択モードにする
+                onLongClick = { onCheckedChange(!stockRowData.isChecked) }
+                 */
+            )
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
@@ -71,16 +81,18 @@ fun StockCard(
 fun StockList(
     stockRowList: List<StockRowData>,
     onCheckedChange: (Int, Boolean) -> Unit,
+    onClickStock: (Stock) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
         itemsIndexed(stockRowList) { index, stockRowData ->
-            StockCard(
+            StockRow(
                 index = index,
                 stockRowData = stockRowData,
                 onCheckedChange = { isChecked ->
                     onCheckedChange(index, isChecked)
                 },
+                onClickStock = onClickStock,
                 onClickDelete = { onClickDelete(index) }
             )
         }
