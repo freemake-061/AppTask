@@ -81,9 +81,7 @@ private fun AppTask() {
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth}) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
                 ) {
-                    StockListScreen(
-                        onNavigateToScreen = onNavigateToScreen
-                    )
+                    StockListScreen(onNavigateToScreen = onNavigateToScreen)
                 }
                 composable(
                     route = "StockDetail/{clock}/{quantity}/{comment}",
@@ -99,7 +97,7 @@ private fun AppTask() {
                     val quantity = backStackEntry.arguments?.getInt("quantity")
                     val comment = backStackEntry.arguments?.getString("comment")
                     if (clock != null && quantity != null && comment != null) {
-                        StockDetailScreen(Stock(clock, quantity, comment))
+                        StockDetailScreen(stock = Stock(clock, quantity, comment))
                     }
                 }
             }

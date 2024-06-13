@@ -52,7 +52,7 @@ fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 title = {
-                    Text(stringResource(R.string.home_topbar_title))
+                    Text(text = stringResource(R.string.home_topbar_title))
                 },
                 actions = {
                     Menu(
