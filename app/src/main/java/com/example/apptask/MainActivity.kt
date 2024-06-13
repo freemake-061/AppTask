@@ -28,8 +28,8 @@ sealed class Route {
         override val value: String = "StockList"
     }
 
-    class StockDetailScreen(stock: Stock) : Route() {
-        override val value: String = "StockDetail/${stock.clock}/${stock.quantity}/${stock.comment}"
+    class StockDetailScreen(index: Int) : Route() {
+        override val value: String = "StockDetail/$index"
     }
 }
 
@@ -84,20 +84,16 @@ private fun AppTask() {
                     StockListScreen(onNavigateToScreen = onNavigateToScreen)
                 }
                 composable(
-                    route = "StockDetail/{clock}/{quantity}/{comment}",
+                    route = "StockDetail/{index}",
                     arguments = listOf(
-                        navArgument("clock") { type = NavType.StringType },
-                        navArgument("quantity") { type = NavType.IntType },
-                        navArgument("comment") { type = NavType.StringType }
+                        navArgument("index") { type = NavType.IntType }
                     ),
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
                 ) { backStackEntry ->
-                    val clock = backStackEntry.arguments?.getString("clock")
-                    val quantity = backStackEntry.arguments?.getInt("quantity")
-                    val comment = backStackEntry.arguments?.getString("comment")
-                    if (clock != null && quantity != null && comment != null) {
-                        StockDetailScreen(stock = Stock(clock, quantity, comment))
+                    val index = backStackEntry.arguments?.getInt("index")
+                    if (index != null) {
+                        StockDetailScreen(index)
                     }
                 }
             }

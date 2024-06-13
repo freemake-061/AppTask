@@ -27,7 +27,7 @@ import coil.compose.AsyncImage
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StockDetailScreen(stock: Stock) {
+fun StockDetailScreen(index: Int) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,7 +37,7 @@ fun StockDetailScreen(stock: Stock) {
                 ),
                 title = {
                     Text(
-                        text = stock.comment,
+                        text = "$index",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -48,11 +48,7 @@ fun StockDetailScreen(stock: Stock) {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "clock:${stock.clock}")
-            Text(text = "quantity:${stock.quantity}")
-            Text(text = "comment:${stock.comment}")
             ImagePicker()
-
         }
     }
 }
@@ -67,9 +63,7 @@ fun ImagePicker() {
     }
     Column {
         Button(
-            onClick = {
-                launcher.launch("image/*")
-            }
+            onClick = { launcher.launch("image/*") }
         ) {
             Text(text = stringResource(R.string.form_button_add))
         }

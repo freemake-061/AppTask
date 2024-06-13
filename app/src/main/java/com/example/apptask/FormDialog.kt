@@ -1,5 +1,6 @@
 package com.example.apptask
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.TextClock
 import androidx.annotation.RequiresApi
@@ -42,6 +43,7 @@ import androidx.compose.ui.window.Dialog
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("UnrememberedMutableInteractionSource")
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
