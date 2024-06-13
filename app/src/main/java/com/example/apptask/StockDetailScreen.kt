@@ -21,7 +21,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -65,9 +65,9 @@ fun StockDetailScreen(stock: Stock) {
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun ImagePicker() {
-    var imageUri: Uri? by remember { mutableStateOf(null) }
+    var imageUri: Uri? by rememberSaveable { mutableStateOf(null) }
     val context = LocalContext.current
-    var bitmap: Bitmap? by remember { mutableStateOf(null) }
+    var bitmap: Bitmap? by rememberSaveable { mutableStateOf(null) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         imageUri = uri
