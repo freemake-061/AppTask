@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -127,7 +128,7 @@ fun FormDialog(
                                 enabled = true,
                                 singleLine = true,
                                 visualTransformation = VisualTransformation.None,
-                                interactionSource = MutableInteractionSource(),
+                                interactionSource = remember { MutableInteractionSource() },
                                 contentPadding = TextFieldDefaults.contentPaddingWithLabel(
                                     start = 0.dp,
                                     top = 0.dp,
