@@ -32,7 +32,7 @@ import coil.compose.AsyncImage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockDetailScreen(
-    onNavigateToScreen: (Route) -> Unit,
+    onPopToScreen: (Route) -> Unit,
     stock: Stock
 ) {
     Scaffold(
@@ -50,7 +50,7 @@ fun StockDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onNavigateToScreen((Route.StockListScreen())) }) {
+                    IconButton(onClick = { onPopToScreen((Route.StockListScreen())) }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.detail_button_desc_back)
