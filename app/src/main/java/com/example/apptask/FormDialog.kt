@@ -49,7 +49,7 @@ import java.time.format.DateTimeFormatter
 fun FormDialog(
     onDismissRequest: () -> Unit,
     onClickClose: () -> Unit,
-    onClickAdd: (StockRowData) -> Unit
+    onClickAdd: (Stock) -> Unit
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Surface {
@@ -154,13 +154,10 @@ fun FormDialog(
                             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
                             val currentTime = formatTime.format(LocalDateTime.now())
                             onClickAdd(
-                                StockRowData(
-                                    isChecked = false,
-                                    Stock(
-                                        clock = currentTime,
-                                        quantity = quantity,
-                                        comment = comment
-                                    )
+                                Stock(
+                                    clock = currentTime,
+                                    quantity = quantity,
+                                    comment = comment
                                 )
                             )
                         }

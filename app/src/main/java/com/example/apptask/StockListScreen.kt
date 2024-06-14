@@ -40,7 +40,10 @@ fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
             onClickClose = { canShowDialog = false },
             onClickAdd = { stock ->
                 canShowDialog = false
-                stockRowList += stock
+                stockRowList += StockRowData(
+                    isChecked = false,
+                    stock = stock
+                )
             }
         )
     }

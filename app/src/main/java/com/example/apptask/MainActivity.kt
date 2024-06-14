@@ -76,6 +76,9 @@ private fun AppTask() {
                 val onNavigateToScreen: (Route) -> Unit = { route ->
                     navController.navigate(route.value)
                 }
+                val onPopToScreen: (Route) -> Unit = { route ->
+                    navController.popBackStack(route.value, false)
+                }
                 composable(
                     route = "StockList",
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth}) },
@@ -97,7 +100,10 @@ private fun AppTask() {
                     val quantity = backStackEntry.arguments?.getInt("quantity")
                     val comment = backStackEntry.arguments?.getString("comment")
                     if (clock != null && quantity != null && comment != null) {
-                        StockDetailScreen(stock = Stock(clock, quantity, comment))
+                        StockDetailScreen(
+                            onPopToScreen = onPopToScreen,
+                            stock = Stock(clock, quantity, comment)
+                        )
                     }
                 }
             }
