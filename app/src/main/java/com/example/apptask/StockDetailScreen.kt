@@ -7,8 +7,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,7 +31,10 @@ import coil.compose.AsyncImage
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StockDetailScreen(index: Int) {
+fun StockDetailScreen(
+    onNavigateToScreen: (Route) -> Unit,
+    index: Int
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,6 +49,14 @@ fun StockDetailScreen(index: Int) {
                         overflow = TextOverflow.Ellipsis
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = { onNavigateToScreen((Route.StockListScreen())) }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.detail_button_desc_back)
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->

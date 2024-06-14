@@ -19,5 +19,7 @@
     <string name="sum_label_message">合計 %1$d です</string>
     <string name="sum_button_ok">OK</string>
 
-    <string name="form_button_desc_delete">削除</string>
+    <string name="list_button_desc_delete">削除</string>
+
+    <string name="detail_button_desc_back">戻る</string>
 </resources>

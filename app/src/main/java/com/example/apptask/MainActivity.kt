@@ -93,7 +93,10 @@ private fun AppTask() {
                 ) { backStackEntry ->
                     val index = backStackEntry.arguments?.getInt("index")
                     if (index != null) {
-                        StockDetailScreen(index)
+                        StockDetailScreen(
+                            onNavigateToScreen = onNavigateToScreen,
+                            index = index
+                        )
                     }
                 }
             }
