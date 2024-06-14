@@ -27,7 +27,7 @@ import coil.compose.AsyncImage
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StockDetailScreen(index: Int) {
+fun StockDetailScreen(stock: Stock) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,7 +37,7 @@ fun StockDetailScreen(index: Int) {
                 ),
                 title = {
                     Text(
-                        text = "$index",
+                        text = stock.comment,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -48,6 +48,9 @@ fun StockDetailScreen(index: Int) {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
+            Text(text = "clock:${stock.clock}")
+            Text(text = "quantity:${stock.quantity}")
+            Text(text = "comment:${stock.comment}")
             ImagePicker()
         }
     }
