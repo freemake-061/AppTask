@@ -1,6 +1,5 @@
 package com.example.apptask
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.widget.TextClock
 import androidx.annotation.RequiresApi
@@ -27,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +43,6 @@ import androidx.compose.ui.window.Dialog
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@SuppressLint("UnrememberedMutableInteractionSource")
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,7 +128,7 @@ fun FormDialog(
                                 enabled = true,
                                 singleLine = true,
                                 visualTransformation = VisualTransformation.None,
-                                interactionSource = MutableInteractionSource(),
+                                interactionSource = remember { MutableInteractionSource() },
                                 contentPadding = TextFieldDefaults.contentPaddingWithLabel(
                                     start = 0.dp,
                                     top = 0.dp,

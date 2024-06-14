@@ -33,7 +33,7 @@ import coil.compose.AsyncImage
 @Composable
 fun StockDetailScreen(
     onNavigateToScreen: (Route) -> Unit,
-    index: Int
+    stock: Stock
 ) {
     Scaffold(
         topBar = {
@@ -44,7 +44,7 @@ fun StockDetailScreen(
                 ),
                 title = {
                     Text(
-                        text = "$index",
+                        text = stock.comment,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -63,6 +63,9 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
+            Text(text = "clock:${stock.clock}")
+            Text(text = "quantity:${stock.quantity}")
+            Text(text = "comment:${stock.comment}")
             ImagePicker()
         }
     }

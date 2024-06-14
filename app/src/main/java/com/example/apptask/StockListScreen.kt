@@ -88,8 +88,8 @@ fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
                         it[index] = it[index].copy(isChecked = isChecked)
                     }
                 },
-                onClickStock = { index ->
-                    onNavigateToScreen(Route.StockDetailScreen(index))
+                onClickStock = { stock ->
+                    onNavigateToScreen(Route.StockDetailScreen(stock))
                 },
                 onClickDelete = { index ->
                     stockRowList = stockRowList.toMutableList().also {
