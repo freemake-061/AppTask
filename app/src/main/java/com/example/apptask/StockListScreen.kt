@@ -31,20 +31,23 @@ import androidx.compose.ui.res.stringResource
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
-    var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
-    var canShowDialog by rememberSaveable { mutableStateOf(false) }
+fun StockListScreen(
+    stockRowList: List<StockRowData>,
+    canShowDialog: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickClose: () -> Unit,
+    onClickAdd: (Stock) -> Unit,
+    onClickClear: () -> Unit,
+    onClickFAB: () -> Unit,
+    onCheckedChange: (Int, Boolean) -> Unit,
+    onClickStock: (Stock) -> Unit,
+    onClickDelete: (Int) -> Unit
+    ) {
     if (canShowDialog) {
         FormDialog(
-            onDismissRequest = { canShowDialog = false },
-            onClickClose = { canShowDialog = false },
-            onClickAdd = { stock ->
-                canShowDialog = false
-                stockRowList += StockRowData(
-                    isChecked = false,
-                    stock = stock
-                )
-            }
+            onDismissRequest = onDismissRequest,
+            onClickClose = onClickClose,
+            onClickAdd = onClickAdd
         )
     }
     Scaffold(
@@ -59,18 +62,14 @@ fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
                 },
                 actions = {
                     Menu(
-                        onClickClear = {
-                            stockRowList = stockRowList.toMutableList().also {
-                                it.clear()
-                            }
-                        },
+                        onClickClear = onClickClear,
                         stockRowList = stockRowList
                     )
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { canShowDialog = true }) {
+            FloatingActionButton(onClick = onClickFAB) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.home_button_desc_add)
@@ -83,19 +82,9 @@ fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
         ) {
             StockList(
                 stockRowList = stockRowList,
-                onCheckedChange = { index, isChecked ->
-                    stockRowList = stockRowList.toMutableList().also {
-                        it[index] = it[index].copy(isChecked = isChecked)
-                    }
-                },
-                onClickStock = { stock ->
-                    onNavigateToScreen(Route.StockDetailScreen(stock))
-                },
-                onClickDelete = { index ->
-                    stockRowList = stockRowList.toMutableList().also {
-                        it.removeAt(index)
-                    }
-                }
+                onCheckedChange = onCheckedChange,
+                onClickStock = onClickStock,
+                onClickDelete = onClickDelete
             )
         }
     }

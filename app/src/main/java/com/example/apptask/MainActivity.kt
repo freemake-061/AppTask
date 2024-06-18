@@ -12,6 +12,10 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
@@ -71,6 +75,7 @@ var initialStocks = listOf(
 private fun AppTask() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
+            var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "StockList") {
                 val onNavigateToScreen: (Route) -> Unit = { route ->
@@ -84,7 +89,39 @@ private fun AppTask() {
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth}) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
                 ) {
-                    StockListScreen(onNavigateToScreen = onNavigateToScreen)
+                    var canShowDialog by rememberSaveable { mutableStateOf(false) }
+                    StockListScreen(
+                        stockRowList = stockRowList,
+                        canShowDialog = canShowDialog,
+                        onDismissRequest = { canShowDialog = false },
+                        onClickClose = { canShowDialog = false },
+                        onClickAdd = { stock ->
+                            canShowDialog = false
+                            stockRowList += StockRowData(
+                                isChecked = false,
+                                stock = stock
+                            )
+                        },
+                        onClickClear = {
+                            stockRowList = stockRowList.toMutableList().also {
+                                it.clear()
+                            }
+                        },
+                        onClickFAB = { canShowDialog = true },
+                        onCheckedChange = { index, isChecked ->
+                            stockRowList = stockRowList.toMutableList().also {
+                                it[index] = it[index].copy(isChecked = isChecked)
+                            }
+                        },
+                        onClickStock = { stock ->
+                            onNavigateToScreen(Route.StockDetailScreen(stock))
+                        },
+                        onClickDelete = { index ->
+                            stockRowList = stockRowList.toMutableList().also {
+                                it.removeAt(index)
+                            }
+                        }
+                    )
                 }
                 composable(
                     route = "StockDetail/{clock}/{quantity}/{comment}",
