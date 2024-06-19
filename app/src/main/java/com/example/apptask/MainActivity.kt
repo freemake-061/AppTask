@@ -88,7 +88,7 @@ private fun AppTask() {
                     StockListScreen(onNavigateToScreen = onNavigateToScreen)
                 }
                 composable(
-                    route = "StockDetail/{stringUri}/{clock}/{quantity}/{comment}",
+                    route = "StockDetail/?stringUri={stringUri}/{clock}/{quantity}/{comment}",
                     arguments = listOf(
                         navArgument("stringUri") {
                             type = NavType.StringType
@@ -102,7 +102,11 @@ private fun AppTask() {
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
                 ) { backStackEntry ->
                     val stringUri = backStackEntry.arguments?.getString("stringUri")
-                    val uri = Uri.parse(stringUri)
+                    val uri = if (stringUri != null) {
+                        Uri.parse(stringUri)
+                    } else {
+                        null
+                    }
                     val clock = backStackEntry.arguments?.getString("clock")
                     val quantity = backStackEntry.arguments?.getInt("quantity")
                     val comment = backStackEntry.arguments?.getString("comment")
