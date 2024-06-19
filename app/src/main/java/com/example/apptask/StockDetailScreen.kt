@@ -66,15 +66,20 @@ fun StockDetailScreen(
             Text(text = "clock:${stock.clock}")
             Text(text = "quantity:${stock.quantity}")
             Text(text = "comment:${stock.comment}")
-            ImagePicker()
+            ImagePicker(stock.uri)
+            Button(
+                onClick = { /*TODO*/ }
+            ) {
+                Text(text = "保存")
+            }
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun ImagePicker() {
-    var imageUri: Uri? by rememberSaveable { mutableStateOf(null) }
+fun ImagePicker(stockUri: Uri?) {
+    var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         imageUri = uri
