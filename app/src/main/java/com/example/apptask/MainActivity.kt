@@ -30,8 +30,7 @@ sealed class Route {
     }
 
     class StockDetailScreen(stock: Stock) : Route() {
-        // uriをString型にする
-        override val value: String = "StockDetail/${"uri:"+stock.uri.toString()}/${stock.clock}/${stock.quantity}/${stock.comment}"
+        override val value: String = "StockDetail/?stringUri=${stock.uri.toString()}/${stock.clock}/${stock.quantity}/${stock.comment}"
     }
 }
 
@@ -76,7 +75,6 @@ private fun AppTask() {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "StockList") {
                 val onNavigateToScreen: (Route) -> Unit = { route ->
-                    println(route.value)
                     navController.navigate(route.value)
                 }
                 val onPopToScreen: (Route) -> Unit = { route ->
@@ -92,7 +90,10 @@ private fun AppTask() {
                 composable(
                     route = "StockDetail/{stringUri}/{clock}/{quantity}/{comment}",
                     arguments = listOf(
-                        navArgument("stringUri") { type = NavType.StringType },
+                        navArgument("stringUri") {
+                            type = NavType.StringType
+                            nullable = true
+                        },
                         navArgument("clock") { type = NavType.StringType },
                         navArgument("quantity") { type = NavType.IntType },
                         navArgument("comment") { type = NavType.StringType }
@@ -101,7 +102,7 @@ private fun AppTask() {
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
                 ) { backStackEntry ->
                     val stringUri = backStackEntry.arguments?.getString("stringUri")
-                    val uri = Uri.parse(stringUri?.drop(4)) //頭のuri:を取る
+                    val uri = Uri.parse(stringUri)
                     val clock = backStackEntry.arguments?.getString("clock")
                     val quantity = backStackEntry.arguments?.getInt("quantity")
                     val comment = backStackEntry.arguments?.getString("comment")
