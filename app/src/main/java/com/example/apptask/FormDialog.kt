@@ -155,6 +155,7 @@ fun FormDialog(
                             val currentTime = formatTime.format(LocalDateTime.now())
                             onClickAdd(
                                 Stock(
+                                    uri = null,
                                     clock = currentTime,
                                     quantity = quantity,
                                     comment = comment
