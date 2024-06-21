@@ -5,7 +5,10 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -23,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,7 +57,7 @@ fun StockDetailScreen(
                     IconButton(onClick = { onPopToScreen((Route.StockListScreen())) }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.detail_button_desc_back)
+                            contentDescription = stringResource(R.string.detail_button_back_desc)
                         )
                     }
                 }
@@ -66,25 +70,37 @@ fun StockDetailScreen(
             Text(text = "clock:${stock.clock}")
             Text(text = "quantity:${stock.quantity}")
             Text(text = "comment:${stock.comment}")
-            ImagePicker()
+            ImagePicker(stock.uri)
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun ImagePicker() {
-    var imageUri: Uri? by rememberSaveable { mutableStateOf(null) }
+fun ImagePicker(stockUri: Uri?) {
+    var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         imageUri = uri
     }
     Column {
-        Button(
-            onClick = { launcher.launch("image/*") }
-        ) {
-            Text(text = stringResource(R.string.form_button_add))
+        Row {
+            Button(
+                onClick = { launcher.launch("image/*") }
+            ) {
+                Text(text = stringResource(R.string.detail_button_add))
+            }
+            Button(
+                onClick = { /*TODO*/ }
+            ) {
+                Text(text = "保存")
+            }
         }
-        AsyncImage(model = imageUri, contentDescription = null)
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(model = imageUri, contentDescription = stringResource(R.string.detail_image_desc))
+        }
     }
 }

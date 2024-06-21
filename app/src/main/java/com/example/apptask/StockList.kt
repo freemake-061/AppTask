@@ -70,7 +70,7 @@ fun StockRow(
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.list_button_desc_delete),
+                contentDescription = stringResource(R.string.list_button_delete_desc),
                 modifier = Modifier.clickable { onClickDelete() }
             )
         }
