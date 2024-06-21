@@ -69,7 +69,7 @@ fun FormDialog(
                     )
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(R.string.form_button_desc_close),
+                        contentDescription = stringResource(R.string.form_button_close_desc),
                         tint = colorResource(android.R.color.darker_gray),
                         modifier = Modifier.clickable { onClickClose() }
                     )

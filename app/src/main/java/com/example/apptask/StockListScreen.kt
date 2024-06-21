@@ -73,7 +73,7 @@ fun StockListScreen(onNavigateToScreen: (Route) -> Unit) {
             FloatingActionButton(onClick = { canShowDialog = true }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.home_button_desc_add)
+                    contentDescription = stringResource(R.string.home_button_add_desc)
                 )
             }
         }
@@ -114,7 +114,7 @@ private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Filled.Menu,
-            contentDescription = stringResource(R.string.home_button_desc_menu)
+            contentDescription = stringResource(R.string.home_button_menu_desc)
         )
         DropdownMenu(
             expanded = expanded,

@@ -2,12 +2,12 @@
     <string name="app_name">AppTask</string>
 
     <string name="home_topbar_title">リスト</string>
-    <string name="home_button_desc_menu">メニュー</string>
-    <string name="home_button_desc_add">フォームの表示</string>
+    <string name="home_button_menu_desc">メニュー</string>
+    <string name="home_button_add_desc">フォームの表示</string>
 
     <string name="form_label_title">アイテムを追加</string>
     <string name="form_label_quantity">数量：</string>
-    <string name="form_button_desc_close">閉じる</string>
+    <string name="form_button_close_desc">閉じる</string>
     <string name="form_button_plus">+</string>
     <string name="form_button_minus">-</string>
     <string name="form_button_add">追加</string>
@@ -19,7 +19,9 @@
     <string name="sum_label_message">合計 %1$d です</string>
     <string name="sum_button_ok">OK</string>
 
-    <string name="list_button_desc_delete">削除</string>
+    <string name="list_button_delete_desc">削除</string>
 
-    <string name="detail_button_desc_back">戻る</string>
+    <string name="detail_button_back_desc">戻る</string>
+    <string name="detail_button_add">画像を追加</string>
+    <string name="detail_image_desc">画像</string>
 </resources>
