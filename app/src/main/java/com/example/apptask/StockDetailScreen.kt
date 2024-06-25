@@ -54,7 +54,7 @@ fun StockDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onPopToScreen((Route.StockListScreen())) }) {
+                    IconButton(onClick = { onPopToScreen(Route.StockListScreen()) }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.detail_button_back_desc)
