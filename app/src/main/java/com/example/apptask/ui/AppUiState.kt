@@ -1,7 +1,7 @@
 package com.example.apptask.ui
 
-data class AppUiState(
+data class FormUiState(
     val quantity: Int = 0,
-    val currentTime: String = "",
     val comment: String = "",
+    val canShowDialog: Boolean = true
 )

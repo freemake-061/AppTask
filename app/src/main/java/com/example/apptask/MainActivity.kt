@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.apptask.ui.StockListScreen
 import com.example.apptask.ui.theme.AppTaskTheme
 
 sealed class Route {
