@@ -12,6 +12,9 @@ class FormViewModel : ViewModel() {
 
     fun initAndShowForm() {
         _uiState.value = FormUiState()
+        _uiState.update { currentState ->
+            currentState.copy(canShowDialog = true)
+        }
     }
 
     fun closeForm() {

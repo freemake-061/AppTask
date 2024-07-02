@@ -70,18 +70,7 @@ fun StockListScreen(
     val formUiState by formViewModel.uiState.collectAsState()
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     if (formUiState.canShowDialog) {
-        FormDialog(
-            /*
-            onClickClose = { canShowDialog = false },
-            onClickAdd = { stock ->
-                canShowDialog = false
-                stockRowList += StockRowData(
-                    isChecked = false,
-                    stock = stock
-                )
-            }
-            */
-        )
+        FormDialog()
     }
     Scaffold(
         topBar = {
@@ -195,7 +184,8 @@ private fun SumDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormDialog(
-    formViewModel: FormViewModel = viewModel()
+    formViewModel: FormViewModel = viewModel(),
+    stockListViewModel: StockListViewModel = viewModel()
 ) {
     val formUiState by formViewModel.uiState.collectAsState()
 
@@ -298,7 +288,10 @@ fun FormDialog(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { formViewModel.closeForm() }
+                        onClick = {
+                            formViewModel.closeForm()
+                            stockListViewModel.addStock(formUiState.quantity, formUiState.comment)
+                        }
                     ) {
                         Text(text = stringResource(R.string.form_button_add))
                     }
