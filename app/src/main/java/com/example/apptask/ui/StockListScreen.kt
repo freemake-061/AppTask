@@ -71,7 +71,6 @@ fun StockListScreen(
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     if (formUiState.canShowDialog) {
         FormDialog(
-            onDismissRequest = {/*TODO*/},
             /*
             onClickClose = { canShowDialog = false },
             onClickAdd = { stock ->
@@ -107,7 +106,7 @@ fun StockListScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { formViewModel.showForm() }) {
+            FloatingActionButton(onClick = { formViewModel.initAndShowForm() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.home_button_add_desc)
@@ -196,12 +195,11 @@ private fun SumDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormDialog(
-    formViewModel: FormViewModel = viewModel(),
-    onDismissRequest: () -> Unit
+    formViewModel: FormViewModel = viewModel()
 ) {
     val formUiState by formViewModel.uiState.collectAsState()
 
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(onDismissRequest = { formViewModel.closeForm() }) {
         Surface {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -219,7 +217,7 @@ fun FormDialog(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(R.string.form_button_close_desc),
                         tint = colorResource(android.R.color.darker_gray),
-                        modifier = Modifier.clickable { /*TODO*/ }
+                        modifier = Modifier.clickable { formViewModel.closeForm() }
                     )
                 }
 
@@ -300,7 +298,7 @@ fun FormDialog(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { /*TODO*/ }
+                        onClick = { formViewModel.closeForm() }
                     ) {
                         Text(text = stringResource(R.string.form_button_add))
                     }

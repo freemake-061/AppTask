@@ -10,8 +10,14 @@ class FormViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(FormUiState())
     val uiState: StateFlow<FormUiState> = _uiState.asStateFlow()
 
-    fun showForm() {
+    fun initAndShowForm() {
         _uiState.value = FormUiState()
+    }
+
+    fun closeForm() {
+        _uiState.update { currentState ->
+            currentState.copy(canShowDialog = false)
+        }
     }
 
     fun incrementQuantity() {
