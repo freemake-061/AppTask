@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class StockListViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(StockUiState())
-    val uiState: StateFlow<StockUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(StockListUiState())
+    val uiState: StateFlow<StockListUiState> = _uiState.asStateFlow()
 
-    private var stockList: MutableList<StockUiState> = mutableListOf()
     private lateinit var newStock: StockUiState
 
     fun addStock(quantity: Int, comment: String) {
@@ -19,7 +19,9 @@ class StockListViewModel : ViewModel() {
             quantity = quantity,
             comment = comment
         )
-        stockList.add(newStock)
+        _uiState.update { currentState ->
+            currentState.copy()
+        }
     }
 
 }

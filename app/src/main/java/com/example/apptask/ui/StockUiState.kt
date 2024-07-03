@@ -6,3 +6,7 @@ data class StockUiState(
     val quantity: Int = 0,
     val comment: String = ""
 )
+
+data class StockListUiState(
+    val stockUiState: MutableList<StockUiState> = mutableListOf()
+)
