@@ -81,10 +81,10 @@ fun StockRow(
 
 @Composable
 fun StockList(
-    stockListUiState: List<StockUiState>
+    stockListUiState: StockListUiState
 ) {
     LazyColumn {
-        itemsIndexed(stockListUiState) { index, stockUiState ->
+        itemsIndexed(stockListUiState.stockList) { index, stockUiState ->
             StockRow(
                 index = index,
                 stockUiState = stockUiState
