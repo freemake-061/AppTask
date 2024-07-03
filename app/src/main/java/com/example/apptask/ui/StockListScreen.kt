@@ -109,7 +109,7 @@ fun StockListScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(stockListUiState = stockListUiState.stockList)
+            StockList(stockListUiState = stockListUiState)
         }
     }
 }
