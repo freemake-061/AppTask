@@ -32,7 +32,14 @@ class StockListViewModel : ViewModel() {
 
     //作業中
     fun onCheckedChange(index: Int) {
-
+        val newStock = _uiState.value.stockList[index].copy(
+            isChecked = !_uiState.value.stockList[index].isChecked
+        )
+        val newStockList = _uiState.value.stockList.toMutableList()
+        newStockList[index] = newStock
+        _uiState.update { currentState ->
+            currentState.copy(stockList = newStockList)
+        }
     }
 
 }
