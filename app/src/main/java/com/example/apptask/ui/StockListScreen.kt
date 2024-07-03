@@ -188,7 +188,7 @@ fun FormDialog(
     stockListViewModel: StockListViewModel = viewModel()
 ) {
     val formUiState by formViewModel.uiState.collectAsState()
-
+    val stockListUiState by stockListViewModel.uiState.collectAsState()
     Dialog(onDismissRequest = { formViewModel.closeForm() }) {
         Surface {
             Column(

@@ -10,17 +10,14 @@ class StockListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState.asStateFlow()
 
-    private lateinit var newStock: StockUiState
-    private  var newStockList: MutableList<StockUiState> = mutableListOf()
-
     fun addStock(quantity: Int, comment: String) {
-        newStock = StockUiState(
+        val newStock = StockUiState(
             isChecked = false,
             time = "00:00:00",
             quantity = quantity,
             comment = comment
         )
-        newStockList += newStockList
+        val newStockList = _uiState.value.stockList + newStock
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }

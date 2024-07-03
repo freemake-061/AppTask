@@ -8,5 +8,5 @@ data class StockUiState(
 )
 
 data class StockListUiState(
-    val stockList: MutableList<StockUiState> = mutableListOf()
+    val stockList: List<StockUiState> = listOf()
 )
