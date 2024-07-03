@@ -65,9 +65,12 @@ import com.example.apptask.initialStocks
 @Composable
 fun StockListScreen(
     formViewModel: FormViewModel = viewModel(),
+    stockListViewModel: StockListViewModel = viewModel(),
     onNavigateToScreen: (Route) -> Unit
 ) {
     val formUiState by formViewModel.uiState.collectAsState()
+    val stockListUiState by stockListViewModel.uiState.collectAsState()
+
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     if (formUiState.canShowDialog) {
         FormDialog()
@@ -106,22 +109,7 @@ fun StockListScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(
-                stockRowList = stockRowList,
-                onCheckedChange = { index, isChecked ->
-                    stockRowList = stockRowList.toMutableList().also {
-                        it[index] = it[index].copy(isChecked = isChecked)
-                    }
-                },
-                onClickStock = { stock ->
-                    onNavigateToScreen(Route.StockDetailScreen(stock))
-                },
-                onClickDelete = { index ->
-                    stockRowList = stockRowList.toMutableList().also {
-                        it.removeAt(index)
-                    }
-                }
-            )
+            StockList(stockListUiState = stockListUiState.stockList)
         }
     }
 }
@@ -188,7 +176,7 @@ fun FormDialog(
     stockListViewModel: StockListViewModel = viewModel()
 ) {
     val formUiState by formViewModel.uiState.collectAsState()
-    val stockListUiState by stockListViewModel.uiState.collectAsState()
+
     Dialog(onDismissRequest = { formViewModel.closeForm() }) {
         Surface {
             Column(
