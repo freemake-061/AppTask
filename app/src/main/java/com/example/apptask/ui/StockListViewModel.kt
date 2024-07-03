@@ -11,6 +11,7 @@ class StockListViewModel : ViewModel() {
     val uiState: StateFlow<StockListUiState> = _uiState.asStateFlow()
 
     private lateinit var newStock: StockUiState
+    private  var newStockList: MutableList<StockUiState> = mutableListOf()
 
     fun addStock(quantity: Int, comment: String) {
         newStock = StockUiState(
@@ -19,8 +20,9 @@ class StockListViewModel : ViewModel() {
             quantity = quantity,
             comment = comment
         )
+        newStockList += newStockList
         _uiState.update { currentState ->
-            currentState.copy()
+            currentState.copy(stockList = newStockList)
         }
     }
 
