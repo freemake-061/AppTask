@@ -30,4 +30,9 @@ class StockListViewModel : ViewModel() {
         }
     }
 
+    //作業中
+    fun onCheckedChange(index: Int) {
+
+    }
+
 }

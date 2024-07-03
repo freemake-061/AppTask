@@ -23,12 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptask.ui.StockListUiState
+import com.example.apptask.ui.StockListViewModel
 import com.example.apptask.ui.StockUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StockRow(
+    stockListViewModel: StockListViewModel = viewModel(),
     index: Int,
     stockUiState: StockUiState
 ) {
@@ -57,7 +60,7 @@ fun StockRow(
         ) {
             Checkbox(
                 checked = stockUiState.isChecked,
-                onCheckedChange = {}
+                onCheckedChange = { stockListViewModel.onCheckedChange(index) } //作業中
             )
             Text(text = stockUiState.time)
             Text(text = "%,d".format(stockUiState.quantity))
