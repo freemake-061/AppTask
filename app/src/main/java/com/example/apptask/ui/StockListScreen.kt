@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -177,6 +178,8 @@ fun FormDialog(
     stockListViewModel: StockListViewModel = viewModel()
 ) {
     val formUiState by formViewModel.uiState.collectAsState()
+    var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
+    var comment by rememberSaveable { mutableStateOf("") }
 
     Dialog(onDismissRequest = { formViewModel.closeForm() }) {
         Surface {
@@ -204,11 +207,11 @@ fun FormDialog(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(formUiState.quantity))
+                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
-                        onClick = { formViewModel.incrementQuantity() },
-                        enabled = when(formUiState.quantity) {
+                        onClick = { quantity++ },
+                        enabled = when(quantity) {
                             Constants.STOCK_QUANTITY_MAX -> false
                             else -> true
                         }
@@ -216,8 +219,8 @@ fun FormDialog(
                         Text(text = stringResource(R.string.form_button_plus))
                     }
                     ElevatedButton(
-                        onClick = { formViewModel.decrementQuantity() },
-                        enabled = when(formUiState.quantity) {
+                        onClick = { quantity-- },
+                        enabled = when(quantity) {
                             Constants.STOCK_QUANTITY_MIN -> false
                             else -> true
                         }
@@ -245,12 +248,12 @@ fun FormDialog(
                     )
                     BasicTextField(
                         modifier = Modifier.weight(1f),
-                        value = formUiState.comment,
-                        onValueChange = { formViewModel.onCommentChange(it) },
+                        value = comment,
+                        onValueChange = { comment = it },
                         singleLine = true,
                         decorationBox = @Composable { innerTextField ->
                             TextFieldDefaults.DecorationBox(
-                                value = formUiState.comment,
+                                value = comment,
                                 innerTextField = innerTextField,
                                 enabled = true,
                                 singleLine = true,
