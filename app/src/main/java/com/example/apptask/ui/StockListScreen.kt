@@ -65,16 +65,20 @@ import com.example.apptask.initialStocks
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockListScreen(
-    formViewModel: FormViewModel = viewModel(),
     stockListViewModel: StockListViewModel = viewModel(),
     onNavigateToScreen: (Route) -> Unit
 ) {
-    val formUiState by formViewModel.uiState.collectAsState()
     val stockListUiState by stockListViewModel.uiState.collectAsState()
 
     var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
-    if (formUiState.canShowDialog) {
-        FormDialog()
+    if (stockListUiState.canShowForm) {
+        FormDialog(
+            onDismissRequest = { stockListViewModel.closeForm() },
+            onClickAdd = { quantity, comment ->
+                stockListViewModel.closeForm()
+                stockListViewModel.addStock(quantity, comment)
+            }
+        )
     }
     Scaffold(
         topBar = {
@@ -99,7 +103,7 @@ fun StockListScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { formViewModel.initAndShowForm() }) {
+            FloatingActionButton(onClick = { stockListViewModel.showForm() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.home_button_add_desc)
@@ -174,14 +178,13 @@ private fun SumDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormDialog(
-    formViewModel: FormViewModel = viewModel(),
-    stockListViewModel: StockListViewModel = viewModel()
+    onDismissRequest: () -> Unit,
+    onClickAdd: (Int, String) -> Unit
 ) {
-    val formUiState by formViewModel.uiState.collectAsState()
     var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
     var comment by rememberSaveable { mutableStateOf("") }
 
-    Dialog(onDismissRequest = { formViewModel.closeForm() }) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Surface {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -199,7 +202,7 @@ fun FormDialog(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(R.string.form_button_close_desc),
                         tint = colorResource(android.R.color.darker_gray),
-                        modifier = Modifier.clickable { formViewModel.closeForm() }
+                        modifier = Modifier.clickable { onDismissRequest() }
                     )
                 }
 
@@ -281,8 +284,7 @@ fun FormDialog(
                 ) {
                     Button(
                         onClick = {
-                            formViewModel.closeForm()
-                            stockListViewModel.addStock(formUiState.quantity, formUiState.comment)
+                            onClickAdd(quantity, comment)
                         }
                     ) {
                         Text(text = stringResource(R.string.form_button_add))

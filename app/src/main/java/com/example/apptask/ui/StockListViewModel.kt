@@ -15,15 +15,15 @@ class StockListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState.asStateFlow()
 
-    fun showDialog() {
+    fun showForm() {
         _uiState.update { currentState ->
-            currentState.copy(canShowDialog = true)
+            currentState.copy(canShowForm = true)
         }
     }
 
-    fun closeDialog() {
+    fun closeForm() {
         _uiState.update { currentState ->
-            currentState.copy(canShowDialog = false)
+            currentState.copy(canShowForm = false)
         }
     }
 
