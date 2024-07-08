@@ -60,7 +60,7 @@ fun StockRow(
         ) {
             Checkbox(
                 checked = stockUiState.isChecked,
-                onCheckedChange = { stockListViewModel.onCheckedChange(index) } //作業中
+                onCheckedChange = { stockListViewModel.onCheckedChange(index) }
             )
             Text(text = stockUiState.time)
             Text(text = "%,d".format(stockUiState.quantity))
@@ -73,7 +73,7 @@ fun StockRow(
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.list_button_delete_desc),
-                modifier = Modifier.clickable {  }
+                modifier = Modifier.clickable { stockListViewModel.deleteStock(index) }
             )
         }
     }

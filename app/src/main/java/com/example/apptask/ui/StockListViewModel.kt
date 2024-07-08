@@ -42,7 +42,13 @@ class StockListViewModel : ViewModel() {
         }
     }
 
-    //作業中
+    fun deleteStock(index: Int) {
+        val newStockList = _uiState.value.stockList.minus(_uiState.value.stockList[index])
+        _uiState.update { currentState ->
+            currentState.copy(stockList = newStockList)
+        }
+    }
+
     fun onCheckedChange(index: Int) {
         val newStock = _uiState.value.stockList[index].copy(
             isChecked = !_uiState.value.stockList[index].isChecked
