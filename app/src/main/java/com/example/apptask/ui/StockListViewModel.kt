@@ -15,6 +15,18 @@ class StockListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState.asStateFlow()
 
+    fun showDialog() {
+        _uiState.update { currentState ->
+            currentState.copy(canShowDialog = true)
+        }
+    }
+
+    fun closeDialog() {
+        _uiState.update { currentState ->
+            currentState.copy(canShowDialog = false)
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun addStock(quantity: Int, comment: String) {
         val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)

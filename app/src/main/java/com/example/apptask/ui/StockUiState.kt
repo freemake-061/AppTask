@@ -8,5 +8,6 @@ data class StockUiState(
 )
 
 data class StockListUiState(
-    val stockList: List<StockUiState> = listOf()
+    val stockList: List<StockUiState> = listOf(),
+    val canShowDialog: Boolean = false
 )
