@@ -60,4 +60,27 @@ class StockListViewModel : ViewModel() {
         }
     }
 
+    fun clearStock() {
+        _uiState.update { currentState ->
+            currentState.copy(stockList = listOf())
+        }
+    }
+
+    fun showSum() {
+        _uiState.update { currentState ->
+            currentState.copy(canShowSum = true)
+        }
+    }
+
+    fun closeSum() {
+        _uiState.update { currentState ->
+            currentState.copy(canShowSum = false)
+        }
+    }
+
+    fun sumQuantity(): Int {
+        val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
+        return isCheckedStock.sumOf { it.quantity }
+    }
+
 }

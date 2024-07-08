@@ -70,7 +70,6 @@ fun StockListScreen(
 ) {
     val stockListUiState by stockListViewModel.uiState.collectAsState()
 
-    var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
     if (stockListUiState.canShowForm) {
         FormDialog(
             onDismissRequest = { stockListViewModel.closeForm() },
@@ -78,6 +77,12 @@ fun StockListScreen(
                 stockListViewModel.closeForm()
                 stockListViewModel.addStock(quantity, comment)
             }
+        )
+    }
+    if (stockListUiState.canShowSum) {
+        SumDialog(
+            sum = stockListViewModel.sumQuantity(),
+            onDismissRequest = { stockListViewModel.closeSum() }
         )
     }
     Scaffold(
@@ -92,12 +97,12 @@ fun StockListScreen(
                 },
                 actions = {
                     Menu(
-                        onClickClear = {
-                            stockRowList = stockRowList.toMutableList().also {
-                                it.clear()
-                            }
-                        },
-                        stockRowList = stockRowList
+                        onClickClear = { stockListViewModel.clearStock() },
+                        onClickSum = {
+                            stockListViewModel.showSum()
+                            stockListViewModel.sumQuantity()
+
+                        }
                     )
                 }
             )
@@ -120,15 +125,11 @@ fun StockListScreen(
 }
 
 @Composable
-private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
+private fun Menu(
+    onClickClear: () -> Unit,
+    onClickSum: () -> Unit
+) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var canShowDialog by rememberSaveable { mutableStateOf(false) }
-    if (canShowDialog) {
-        SumDialog(
-            stockRowList = stockRowList,
-            onDismissRequest = { canShowDialog = false }
-        )
-    }
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Filled.Menu,
@@ -149,7 +150,7 @@ private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
                 text = { Text(stringResource(R.string.menu_button_sum)) },
                 onClick = {
                     expanded = false
-                    canShowDialog = true
+                    onClickSum()
                 }
             )
         }
@@ -158,11 +159,9 @@ private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
 
 @Composable
 private fun SumDialog(
-    stockRowList: List<StockRowData>,
+    sum: Int,
     onDismissRequest: () -> Unit
 ) {
-    val isCheckedStocks = stockRowList.filter { it.isChecked }
-    val sum = isCheckedStocks.sumOf { it.stock.quantity }
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
         text = { Text(stringResource(R.string.sum_label_message, sum)) },
@@ -177,7 +176,7 @@ private fun SumDialog(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormDialog(
+private fun FormDialog(
     onDismissRequest: () -> Unit,
     onClickAdd: (Int, String) -> Unit
 ) {
