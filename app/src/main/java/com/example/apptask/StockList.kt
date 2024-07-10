@@ -23,18 +23,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.apptask.ui.StockListUiState
+import com.example.apptask.ui.StockListViewModel
+import com.example.apptask.ui.StockUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StockRow(
+    stockListViewModel: StockListViewModel = viewModel(),
     index: Int,
-    stockRowData: StockRowData,
-    onCheckedChange: (Boolean) -> Unit,
-    onClickStock: (Stock) -> Unit,
-    onClickDelete: () -> Unit
+    stockUiState: StockUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
 ) {
     var rowColor = Color(0xFFFFFBFE)
-    if (stockRowData.isChecked) {
+    if (stockUiState.isChecked) {
         rowColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         rowColor = Color(0xFFE6E6FA)
@@ -44,7 +49,7 @@ fun StockRow(
             .fillMaxWidth()
             .background(color = rowColor)
             .combinedClickable(
-                onClick = { onClickStock(stockRowData.stock) },
+                onClick = { onClickStock(index) },
                 /*
                 後で長押しで選択モードにする
                 onLongClick = { onCheckedChange(!stockRowData.isChecked) }
@@ -57,13 +62,13 @@ fun StockRow(
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = stockRowData.isChecked,
-                onCheckedChange = onCheckedChange
+                checked = stockUiState.isChecked,
+                onCheckedChange = { onCheckedChange(index) }
             )
-            Text(text = stockRowData.stock.clock)
-            Text(text = "%,d".format(stockRowData.stock.quantity))
+            Text(text = stockUiState.time)
+            Text(text = "%,d".format(stockUiState.quantity))
             Text(
-                text = stockRowData.stock.comment,
+                text = stockUiState.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -71,7 +76,7 @@ fun StockRow(
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.list_button_delete_desc),
-                modifier = Modifier.clickable { onClickDelete() }
+                modifier = Modifier.clickable { onClickDelete(index) }
             )
         }
     }
@@ -79,21 +84,19 @@ fun StockRow(
 
 @Composable
 fun StockList(
-    stockRowList: List<StockRowData>,
-    onCheckedChange: (Int, Boolean) -> Unit,
-    onClickStock: (Stock) -> Unit,
+    stockListUiState: StockListUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(stockRowList) { index, stockRowData ->
+        itemsIndexed(stockListUiState.stockList) { index, stockUiState ->
             StockRow(
                 index = index,
-                stockRowData = stockRowData,
-                onCheckedChange = { isChecked ->
-                    onCheckedChange(index, isChecked)
-                },
+                stockUiState = stockUiState,
+                onCheckedChange = onCheckedChange,
                 onClickStock = onClickStock,
-                onClickDelete = { onClickDelete(index) }
+                onClickDelete = onClickDelete
             )
         }
     }
