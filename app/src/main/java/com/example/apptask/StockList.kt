@@ -23,15 +23,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptask.ui.StockListUiState
-import com.example.apptask.ui.StockListViewModel
 import com.example.apptask.ui.StockUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StockRow(
-    stockListViewModel: StockListViewModel = viewModel(),
     index: Int,
     stockUiState: StockUiState,
     onCheckedChange: (Int) -> Unit,

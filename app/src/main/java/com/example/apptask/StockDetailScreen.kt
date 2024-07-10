@@ -67,7 +67,7 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "clock:${stock.clock}")
+            Text(text = "time:${stock.time}")
             Text(text = "quantity:${stock.quantity}")
             Text(text = "comment:${stock.comment}")
             ImagePicker(stock.uri)
