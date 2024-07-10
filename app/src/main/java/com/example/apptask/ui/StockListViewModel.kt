@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -13,7 +12,7 @@ import com.example.apptask.Constants
 
 class StockListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
-    val uiState: StateFlow<StockListUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<StockListUiState> = _uiState
 
     fun showForm() {
         _uiState.update { currentState ->

@@ -116,7 +116,16 @@ fun StockListScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            StockList(stockListUiState = stockListUiState)
+            StockList(
+                stockListUiState = stockListUiState,
+                onCheckedChange = { index ->
+                    stockListViewModel.onCheckedChange(index)
+                },
+                onClickStock = { /*TODO*/ },
+                onClickDelete = { index ->
+                    stockListViewModel.deleteStock(index)
+                }
+            )
         }
     }
 }

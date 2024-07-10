@@ -33,7 +33,10 @@ import com.example.apptask.ui.StockUiState
 fun StockRow(
     stockListViewModel: StockListViewModel = viewModel(),
     index: Int,
-    stockUiState: StockUiState
+    stockUiState: StockUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
 ) {
     var rowColor = Color(0xFFFFFBFE)
     if (stockUiState.isChecked) {
@@ -46,7 +49,7 @@ fun StockRow(
             .fillMaxWidth()
             .background(color = rowColor)
             .combinedClickable(
-                onClick = {  },
+                onClick = { onClickStock(index) },
                 /*
                 後で長押しで選択モードにする
                 onLongClick = { onCheckedChange(!stockRowData.isChecked) }
@@ -60,7 +63,7 @@ fun StockRow(
         ) {
             Checkbox(
                 checked = stockUiState.isChecked,
-                onCheckedChange = { stockListViewModel.onCheckedChange(index) }
+                onCheckedChange = { onCheckedChange(index) }
             )
             Text(text = stockUiState.time)
             Text(text = "%,d".format(stockUiState.quantity))
@@ -73,7 +76,7 @@ fun StockRow(
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.list_button_delete_desc),
-                modifier = Modifier.clickable { stockListViewModel.deleteStock(index) }
+                modifier = Modifier.clickable { onClickDelete(index) }
             )
         }
     }
@@ -81,13 +84,19 @@ fun StockRow(
 
 @Composable
 fun StockList(
-    stockListUiState: StockListUiState
+    stockListUiState: StockListUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
         itemsIndexed(stockListUiState.stockList) { index, stockUiState ->
             StockRow(
                 index = index,
-                stockUiState = stockUiState
+                stockUiState = stockUiState,
+                onCheckedChange = onCheckedChange,
+                onClickStock = onClickStock,
+                onClickDelete = onClickDelete
             )
         }
     }
