@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -57,23 +58,30 @@ import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
 import com.example.apptask.StockList
-import com.example.apptask.StockRowData
-import com.example.apptask.initialStocks
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockListScreen(
-    formViewModel: FormViewModel = viewModel(),
     stockListViewModel: StockListViewModel = viewModel(),
     onNavigateToScreen: (Route) -> Unit
 ) {
-    val formUiState by formViewModel.uiState.collectAsState()
     val stockListUiState by stockListViewModel.uiState.collectAsState()
 
-    var stockRowList by rememberSaveable { mutableStateOf(initialStocks) }
-    if (formUiState.canShowDialog) {
-        FormDialog()
+    if (stockListUiState.canShowForm) {
+        FormDialog(
+            onDismissRequest = { stockListViewModel.closeForm() },
+            onClickAdd = { quantity, comment ->
+                stockListViewModel.closeForm()
+                stockListViewModel.addStock(quantity, comment)
+            }
+        )
+    }
+    if (stockListUiState.canShowSum) {
+        SumDialog(
+            sum = stockListViewModel.sumQuantity(),
+            onDismissRequest = { stockListViewModel.closeSum() }
+        )
     }
     Scaffold(
         topBar = {
@@ -87,18 +95,17 @@ fun StockListScreen(
                 },
                 actions = {
                     Menu(
-                        onClickClear = {
-                            stockRowList = stockRowList.toMutableList().also {
-                                it.clear()
-                            }
-                        },
-                        stockRowList = stockRowList
+                        onClickClear = { stockListViewModel.clearStock() },
+                        onClickSum = {
+                            stockListViewModel.showSum()
+                            stockListViewModel.sumQuantity()
+                        }
                     )
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { formViewModel.initAndShowForm() }) {
+            FloatingActionButton(onClick = { stockListViewModel.showForm() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.home_button_add_desc)
@@ -115,15 +122,11 @@ fun StockListScreen(
 }
 
 @Composable
-private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
+private fun Menu(
+    onClickClear: () -> Unit,
+    onClickSum: () -> Unit
+) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var canShowDialog by rememberSaveable { mutableStateOf(false) }
-    if (canShowDialog) {
-        SumDialog(
-            stockRowList = stockRowList,
-            onDismissRequest = { canShowDialog = false }
-        )
-    }
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Filled.Menu,
@@ -144,7 +147,7 @@ private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
                 text = { Text(stringResource(R.string.menu_button_sum)) },
                 onClick = {
                     expanded = false
-                    canShowDialog = true
+                    onClickSum()
                 }
             )
         }
@@ -153,11 +156,9 @@ private fun Menu(onClickClear: () -> Unit, stockRowList: List<StockRowData>) {
 
 @Composable
 private fun SumDialog(
-    stockRowList: List<StockRowData>,
+    sum: Int,
     onDismissRequest: () -> Unit
 ) {
-    val isCheckedStocks = stockRowList.filter { it.isChecked }
-    val sum = isCheckedStocks.sumOf { it.stock.quantity }
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
         text = { Text(stringResource(R.string.sum_label_message, sum)) },
@@ -172,13 +173,14 @@ private fun SumDialog(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormDialog(
-    formViewModel: FormViewModel = viewModel(),
-    stockListViewModel: StockListViewModel = viewModel()
+private fun FormDialog(
+    onDismissRequest: () -> Unit,
+    onClickAdd: (Int, String) -> Unit
 ) {
-    val formUiState by formViewModel.uiState.collectAsState()
+    var quantity by rememberSaveable { mutableIntStateOf(Constants.STOCK_QUANTITY_MIN) }
+    var comment by rememberSaveable { mutableStateOf("") }
 
-    Dialog(onDismissRequest = { formViewModel.closeForm() }) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Surface {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -196,7 +198,7 @@ fun FormDialog(
                         imageVector = Icons.Filled.Close,
                         contentDescription = stringResource(R.string.form_button_close_desc),
                         tint = colorResource(android.R.color.darker_gray),
-                        modifier = Modifier.clickable { formViewModel.closeForm() }
+                        modifier = Modifier.clickable { onDismissRequest() }
                     )
                 }
 
@@ -204,11 +206,11 @@ fun FormDialog(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(formUiState.quantity))
+                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(quantity))
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
-                        onClick = { formViewModel.incrementQuantity() },
-                        enabled = when(formUiState.quantity) {
+                        onClick = { quantity++ },
+                        enabled = when(quantity) {
                             Constants.STOCK_QUANTITY_MAX -> false
                             else -> true
                         }
@@ -216,8 +218,8 @@ fun FormDialog(
                         Text(text = stringResource(R.string.form_button_plus))
                     }
                     ElevatedButton(
-                        onClick = { formViewModel.decrementQuantity() },
-                        enabled = when(formUiState.quantity) {
+                        onClick = { quantity-- },
+                        enabled = when(quantity) {
                             Constants.STOCK_QUANTITY_MIN -> false
                             else -> true
                         }
@@ -245,12 +247,12 @@ fun FormDialog(
                     )
                     BasicTextField(
                         modifier = Modifier.weight(1f),
-                        value = formUiState.comment,
-                        onValueChange = { formViewModel.onCommentChange(it) },
+                        value = comment,
+                        onValueChange = { comment = it },
                         singleLine = true,
                         decorationBox = @Composable { innerTextField ->
                             TextFieldDefaults.DecorationBox(
-                                value = formUiState.comment,
+                                value = comment,
                                 innerTextField = innerTextField,
                                 enabled = true,
                                 singleLine = true,
@@ -278,8 +280,7 @@ fun FormDialog(
                 ) {
                     Button(
                         onClick = {
-                            formViewModel.closeForm()
-                            stockListViewModel.addStock(formUiState.quantity, formUiState.comment)
+                            onClickAdd(quantity, comment)
                         }
                     ) {
                         Text(text = stringResource(R.string.form_button_add))
