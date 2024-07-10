@@ -58,8 +58,6 @@ import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
 import com.example.apptask.StockList
-import com.example.apptask.StockRowData
-import com.example.apptask.initialStocks
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,7 +99,6 @@ fun StockListScreen(
                         onClickSum = {
                             stockListViewModel.showSum()
                             stockListViewModel.sumQuantity()
-
                         }
                     )
                 }
