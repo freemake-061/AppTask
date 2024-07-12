@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.apptask.Constants
+import com.example.apptask.Stock
 
 class StockListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
@@ -30,12 +31,16 @@ class StockListViewModel : ViewModel() {
     fun addStock(quantity: Int, comment: String) {
         val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
         val currentTime = formatTime.format(LocalDateTime.now())
-        val newStock = StockUiState().copy(
-            time = currentTime,
-            quantity = quantity,
-            comment = comment
+        val newStockRow = StockRowUiState(
+            isChecked = false,
+            stock = Stock(
+                uri = null,
+                time = currentTime,
+                quantity = quantity,
+                comment = comment
+            )
         )
-        val newStockList = _uiState.value.stockList + newStock
+        val newStockList = _uiState.value.stockList + newStockRow
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
@@ -79,7 +84,7 @@ class StockListViewModel : ViewModel() {
 
     fun sumQuantity(): Int {
         val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
-        return isCheckedStock.sumOf { it.quantity }
+        return isCheckedStock.sumOf { it.stock.quantity }
     }
 
 }

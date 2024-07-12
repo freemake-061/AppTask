@@ -24,19 +24,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.apptask.ui.StockListUiState
-import com.example.apptask.ui.StockUiState
+import com.example.apptask.ui.StockRowUiState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StockRow(
     index: Int,
-    stockUiState: StockUiState,
+    stockRowUiState: StockRowUiState,
     onCheckedChange: (Int) -> Unit,
     onClickStock: (Int) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     var rowColor = Color(0xFFFFFBFE)
-    if (stockUiState.isChecked) {
+    if (stockRowUiState.isChecked) {
         rowColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         rowColor = Color(0xFFE6E6FA)
@@ -59,13 +59,13 @@ fun StockRow(
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = stockUiState.isChecked,
+                checked = stockRowUiState.isChecked,
                 onCheckedChange = { onCheckedChange(index) }
             )
-            Text(text = stockUiState.time)
-            Text(text = "%,d".format(stockUiState.quantity))
+            Text(text = stockRowUiState.stock.time)
+            Text(text = "%,d".format(stockRowUiState.stock.quantity))
             Text(
-                text = stockUiState.comment,
+                text = stockRowUiState.stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -87,10 +87,10 @@ fun StockList(
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(stockListUiState.stockList) { index, stockUiState ->
+        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
             StockRow(
                 index = index,
-                stockUiState = stockUiState,
+                stockRowUiState = stockRowUiState,
                 onCheckedChange = onCheckedChange,
                 onClickStock = onClickStock,
                 onClickDelete = onClickDelete

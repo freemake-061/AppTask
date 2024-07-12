@@ -1,14 +1,14 @@
 package com.example.apptask.ui
 
-data class StockUiState(
-    var isChecked: Boolean = false,
-    val time: String = "00:00:00",
-    val quantity: Int = 0,
-    val comment: String = ""
+import com.example.apptask.Stock
+
+data class StockRowUiState(
+    val isChecked: Boolean = false,
+    val stock: Stock
 )
 
 data class StockListUiState(
-    val stockList: List<StockUiState> = listOf(),
+    val stockList: List<StockRowUiState> = listOf(),
     val canShowForm: Boolean = false,
     val canShowSum: Boolean = false
 )

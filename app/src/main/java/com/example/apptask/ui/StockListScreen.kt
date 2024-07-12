@@ -57,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
+import com.example.apptask.Stock
 import com.example.apptask.StockList
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -121,7 +122,9 @@ fun StockListScreen(
                 onCheckedChange = { index ->
                     stockListViewModel.onCheckedChange(index)
                 },
-                onClickStock = { /*TODO*/ },
+                onClickStock = { index ->
+                    onNavigateToScreen(Route.StockDetailScreen(stockListUiState.stockList[index].stock))
+                },
                 onClickDelete = { index ->
                     stockListViewModel.deleteStock(index)
                 }

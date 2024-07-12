@@ -75,8 +75,8 @@ private fun AppTask() {
                 }
                 composable(
                     route = "StockList",
-                    enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth}) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth }) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth }) }
                 ) {
                     StockListScreen(onNavigateToScreen = onNavigateToScreen)
                 }
@@ -92,7 +92,7 @@ private fun AppTask() {
                         navArgument("comment") { type = NavType.StringType }
                     ),
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
                 ) { backStackEntry ->
                     val stringUri = backStackEntry.arguments?.getString("stringUri")
                     val uri = if (stringUri != null) {
