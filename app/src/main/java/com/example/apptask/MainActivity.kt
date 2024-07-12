@@ -1,6 +1,5 @@
 package com.example.apptask
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -36,7 +35,6 @@ sealed class Route {
 }
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
