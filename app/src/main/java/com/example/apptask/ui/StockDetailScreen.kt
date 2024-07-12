@@ -1,4 +1,4 @@
-package com.example.apptask
+package com.example.apptask.ui
 
 import android.net.Uri
 import android.os.Build
@@ -31,6 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
+import com.example.apptask.R
+import com.example.apptask.Route
+import com.example.apptask.Stock
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
