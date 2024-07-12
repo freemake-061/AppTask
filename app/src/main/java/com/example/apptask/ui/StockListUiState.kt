@@ -3,7 +3,7 @@ package com.example.apptask.ui
 import com.example.apptask.Stock
 
 data class StockRowUiState(
-    val isChecked: Boolean = false,
+    val isChecked: Boolean,
     val stock: Stock
 )
 

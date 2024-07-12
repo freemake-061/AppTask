@@ -73,14 +73,20 @@ fun StockDetailScreen(
             Text(text = "time:${stock.time}")
             Text(text = "quantity:${stock.quantity}")
             Text(text = "comment:${stock.comment}")
-            ImagePicker(stock.uri)
+            ImagePicker(
+                stockUri = stock.uri,
+                onPopToScreen = onPopToScreen
+            )
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun ImagePicker(stockUri: Uri?) {
+fun ImagePicker(
+    stockUri: Uri?,
+    onPopToScreen: (Route) -> Unit
+) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
@@ -94,7 +100,7 @@ fun ImagePicker(stockUri: Uri?) {
                 Text(text = stringResource(R.string.detail_button_add))
             }
             Button(
-                onClick = { /*TODO*/ }
+                onClick = { onPopToScreen(Route.StockListScreen()) }
             ) {
                 Text(text = "保存")
             }
