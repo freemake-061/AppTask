@@ -33,8 +33,8 @@ sealed class Route {
         override val value: String = "StockList"
     }
 
-    class StockDetailScreen(stock: Stock) : Route() {
-        override val value: String = "StockDetail/?stringUri=${stock.uri.toString()}/${stock.time}/${stock.quantity}/${stock.comment}"
+    class StockDetailScreen(index: Int) : Route() {
+        override val value: String = "StockDetail/${index}"
     }
 }
 
@@ -90,15 +90,9 @@ private fun AppTask() {
                     )
                 }
                 composable(
-                    route = "StockDetail/?stringUri={stringUri}/{time}/{quantity}/{comment}",
+                    route = "StockDetail/{index}",
                     arguments = listOf(
-                        navArgument("stringUri") {
-                            type = NavType.StringType
-                            nullable = true
-                        },
-                        navArgument("time") { type = NavType.StringType },
-                        navArgument("quantity") { type = NavType.IntType },
-                        navArgument("comment") { type = NavType.StringType }
+                        navArgument("index") { type = NavType.IntType }
                     ),
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
@@ -107,20 +101,12 @@ private fun AppTask() {
                         navController.getBackStackEntry("Stock")
                     }
                     val stockListViewModel: StockListViewModel = viewModel(viewModelStoreOwner = parentEntry)
-                    val stringUri = backStackEntry.arguments?.getString("stringUri")
-                    val uri = if (stringUri != null) {
-                        Uri.parse(stringUri)
-                    } else {
-                        null
-                    }
-                    val time = backStackEntry.arguments?.getString("time")
-                    val quantity = backStackEntry.arguments?.getInt("quantity")
-                    val comment = backStackEntry.arguments?.getString("comment")
-                    if (time != null && quantity != null && comment != null) {
+                    val index = backStackEntry.arguments?.getInt("index")
+                    if (index != null) {
                         StockDetailScreen(
                             stockListViewModel = stockListViewModel,
                             onPopToScreen = onPopToScreen,
-                            stock = Stock(uri, time, quantity, comment)
+                            index = index
                         )
                     }
                 }

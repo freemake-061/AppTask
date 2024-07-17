@@ -129,7 +129,7 @@ fun StockListScreen(
                     stockListViewModel.onCheckedChange(index)
                 },
                 onClickStock = { index ->
-                    onNavigateToScreen(Route.StockDetailScreen(stockListUiState.stockList[index].stock))
+                    onNavigateToScreen(Route.StockDetailScreen(index))
                 },
                 onClickDelete = { index ->
                     stockListViewModel.deleteStock(index)

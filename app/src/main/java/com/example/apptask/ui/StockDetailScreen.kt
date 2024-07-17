@@ -42,7 +42,7 @@ import com.example.apptask.Stock
 fun StockDetailScreen(
     stockListViewModel: StockListViewModel,
     onPopToScreen: (Route) -> Unit,
-    stock: Stock
+    index: Int
 ) {
     val stockListUiState by stockListViewModel.uiState.collectAsState()
 
@@ -55,7 +55,7 @@ fun StockDetailScreen(
                 ),
                 title = {
                     Text(
-                        text = stock.comment,
+                        text = stockListUiState.stockList[index].stock.comment,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -74,11 +74,11 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "time:${stock.time}")
-            Text(text = "quantity:${stock.quantity}")
-            Text(text = "comment:${stock.comment}")
+            Text(text = "time:${stockListUiState.stockList[index].stock.time}")
+            Text(text = "quantity:${stockListUiState.stockList[index].stock.quantity}")
+            Text(text = "comment:${stockListUiState.stockList[index].stock.comment}")
             ImagePicker(
-                stockUri = stock.uri,
+                stockUri = stockListUiState.stockList[index].stock.uri,
                 onPopToScreen = onPopToScreen
             )
         }
