@@ -12,8 +12,10 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.apptask.ui.StockDetailScreen
 import com.example.apptask.ui.StockListScreen
+import com.example.apptask.ui.StockListViewModel
 import com.example.apptask.ui.theme.AppTaskTheme
 
 sealed class Route {
@@ -65,7 +68,7 @@ private fun AppTask() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "StockList") {
+            NavHost(navController = navController, route = "Stock", startDestination = "StockList") {
                 val onNavigateToScreen: (Route) -> Unit = { route ->
                     navController.navigate(route.value)
                 }
@@ -76,8 +79,15 @@ private fun AppTask() {
                     route = "StockList",
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth }) }
-                ) {
-                    StockListScreen(onNavigateToScreen = onNavigateToScreen)
+                ) {backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("Stock")
+                    }
+                    val stockListViewModel: StockListViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                    StockListScreen(
+                        stockListViewModel = stockListViewModel,
+                        onNavigateToScreen = onNavigateToScreen
+                    )
                 }
                 composable(
                     route = "StockDetail/?stringUri={stringUri}/{time}/{quantity}/{comment}",
@@ -92,7 +102,11 @@ private fun AppTask() {
                     ),
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
-                ) { backStackEntry ->
+                ) {backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("Stock")
+                    }
+                    val stockListViewModel: StockListViewModel = viewModel(viewModelStoreOwner = parentEntry)
                     val stringUri = backStackEntry.arguments?.getString("stringUri")
                     val uri = if (stringUri != null) {
                         Uri.parse(stringUri)
@@ -104,6 +118,7 @@ private fun AppTask() {
                     val comment = backStackEntry.arguments?.getString("comment")
                     if (time != null && quantity != null && comment != null) {
                         StockDetailScreen(
+                            stockListViewModel = stockListViewModel,
                             onPopToScreen = onPopToScreen,
                             stock = Stock(uri, time, quantity, comment)
                         )

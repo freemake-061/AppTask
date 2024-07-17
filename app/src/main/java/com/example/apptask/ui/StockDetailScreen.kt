@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,9 +40,12 @@ import com.example.apptask.Stock
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockDetailScreen(
+    stockListViewModel: StockListViewModel,
     onPopToScreen: (Route) -> Unit,
     stock: Stock
 ) {
+    val stockListUiState by stockListViewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(

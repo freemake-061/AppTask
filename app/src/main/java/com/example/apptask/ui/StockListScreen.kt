@@ -70,7 +70,7 @@ import com.example.apptask.Route
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockListScreen(
-    stockListViewModel: StockListViewModel = viewModel(),
+    stockListViewModel: StockListViewModel,
     onNavigateToScreen: (Route) -> Unit
 ) {
     val stockListUiState by stockListViewModel.uiState.collectAsState()

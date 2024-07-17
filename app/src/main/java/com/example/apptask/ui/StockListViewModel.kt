@@ -1,5 +1,6 @@
 package com.example.apptask.ui
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -85,6 +86,20 @@ class StockListViewModel : ViewModel() {
     fun sumQuantity(): Int {
         val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
         return isCheckedStock.sumOf { it.stock.quantity }
+    }
+
+    fun updateImageUri(index: Int, uri: Uri) {
+        val newStock = _uiState.value.stockList[index].stock.copy(
+            uri = uri
+        )
+        val newStockRow = _uiState.value.stockList[index].copy(
+            stock = newStock
+        )
+        val newStockList = _uiState.value.stockList.toMutableList()
+        newStockList[index] = newStockRow
+        _uiState.update { currentState ->
+            currentState.copy()
+        }
     }
 
 }
