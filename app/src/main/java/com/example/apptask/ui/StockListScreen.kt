@@ -3,15 +3,21 @@ package com.example.apptask.ui
 import android.os.Build
 import android.widget.TextClock
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,6 +25,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
@@ -50,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -57,7 +65,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
-import com.example.apptask.StockList
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -121,10 +128,85 @@ fun StockListScreen(
                 onCheckedChange = { index ->
                     stockListViewModel.onCheckedChange(index)
                 },
-                onClickStock = { /*TODO*/ },
+                onClickStock = { index ->
+                    onNavigateToScreen(Route.StockDetailScreen(stockListUiState.stockList[index].stock))
+                },
                 onClickDelete = { index ->
                     stockListViewModel.deleteStock(index)
                 }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun StockRow(
+    index: Int,
+    stockRowUiState: StockRowUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
+) {
+    var rowColor = Color(0xFFFFFBFE)
+    if (stockRowUiState.isChecked) {
+        rowColor = Color(0xFF00FF00)
+    } else if (index % 2 == 1) {
+        rowColor = Color(0xFFE6E6FA)
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = rowColor)
+            .combinedClickable(
+                onClick = { onClickStock(index) },
+                /*
+                後で長押しで選択モードにする
+                onLongClick = { onCheckedChange(!stockRowData.isChecked) }
+                 */
+            )
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Checkbox(
+                checked = stockRowUiState.isChecked,
+                onCheckedChange = { onCheckedChange(index) }
+            )
+            Text(text = stockRowUiState.stock.time)
+            Text(text = "%,d".format(stockRowUiState.stock.quantity))
+            Text(
+                text = stockRowUiState.stock.comment,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = stringResource(R.string.list_button_delete_desc),
+                modifier = Modifier.clickable { onClickDelete(index) }
+            )
+        }
+    }
+}
+
+@Composable
+fun StockList(
+    stockListUiState: StockListUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
+) {
+    LazyColumn {
+        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
+            StockRow(
+                index = index,
+                stockRowUiState = stockRowUiState,
+                onCheckedChange = onCheckedChange,
+                onClickStock = onClickStock,
+                onClickDelete = onClickDelete
             )
         }
     }

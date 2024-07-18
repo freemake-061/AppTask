@@ -1,6 +1,5 @@
 package com.example.apptask
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -20,23 +19,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.apptask.ui.StockDetailScreen
 import com.example.apptask.ui.StockListScreen
 import com.example.apptask.ui.theme.AppTaskTheme
 
 sealed class Route {
     abstract val value: String
 
-    class StockListScreen() : Route() {
+    class StockListScreen : Route() {
         override val value: String = "StockList"
     }
 
     class StockDetailScreen(stock: Stock) : Route() {
-        override val value: String = "StockDetail/?stringUri=${stock.uri.toString()}/${stock.clock}/${stock.quantity}/${stock.comment}"
+        override val value: String = "StockDetail/?stringUri=${stock.uri.toString()}/${stock.time}/${stock.quantity}/${stock.comment}"
     }
 }
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("SuspiciousIndentation")
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,15 +57,7 @@ private fun Preview() {
     AppTask()
 }
 
-data class Stock(var uri: Uri?, val clock: String, val quantity: Int, val comment: String)
-data class StockRowData(var isChecked: Boolean, val stock: Stock)
-
-var initialStocks = listOf(
-    StockRowData(false, Stock(null, "00:00:00", 0,    "コメント")),
-    StockRowData(false, Stock(null, "00:00:00", 1,    "コメント")),
-    StockRowData(false, Stock(null, "00:00:00", 1000, "コメント")),
-    StockRowData(false, Stock(null, "00:00:00", 9999, "コメントコメントコメントコメントコメントコメントコメントコメントコメント"))
-)
+data class Stock(var uri: Uri?, val time: String, val quantity: Int, val comment: String)
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -83,24 +74,24 @@ private fun AppTask() {
                 }
                 composable(
                     route = "StockList",
-                    enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth}) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth}) }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth }) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth }) }
                 ) {
                     StockListScreen(onNavigateToScreen = onNavigateToScreen)
                 }
                 composable(
-                    route = "StockDetail/?stringUri={stringUri}/{clock}/{quantity}/{comment}",
+                    route = "StockDetail/?stringUri={stringUri}/{time}/{quantity}/{comment}",
                     arguments = listOf(
                         navArgument("stringUri") {
                             type = NavType.StringType
                             nullable = true
                         },
-                        navArgument("clock") { type = NavType.StringType },
+                        navArgument("time") { type = NavType.StringType },
                         navArgument("quantity") { type = NavType.IntType },
                         navArgument("comment") { type = NavType.StringType }
                     ),
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth}) }
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
                 ) { backStackEntry ->
                     val stringUri = backStackEntry.arguments?.getString("stringUri")
                     val uri = if (stringUri != null) {
@@ -108,13 +99,13 @@ private fun AppTask() {
                     } else {
                         null
                     }
-                    val clock = backStackEntry.arguments?.getString("clock")
+                    val time = backStackEntry.arguments?.getString("time")
                     val quantity = backStackEntry.arguments?.getInt("quantity")
                     val comment = backStackEntry.arguments?.getString("comment")
-                    if (clock != null && quantity != null && comment != null) {
+                    if (time != null && quantity != null && comment != null) {
                         StockDetailScreen(
                             onPopToScreen = onPopToScreen,
-                            stock = Stock(uri, clock, quantity, comment)
+                            stock = Stock(uri, time, quantity, comment)
                         )
                     }
                 }

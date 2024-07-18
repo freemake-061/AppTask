@@ -1,4 +1,4 @@
-package com.example.apptask
+package com.example.apptask.ui
 
 import android.net.Uri
 import android.os.Build
@@ -31,6 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
+import com.example.apptask.R
+import com.example.apptask.Route
+import com.example.apptask.Stock
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,17 +70,23 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "clock:${stock.clock}")
+            Text(text = "time:${stock.time}")
             Text(text = "quantity:${stock.quantity}")
             Text(text = "comment:${stock.comment}")
-            ImagePicker(stock.uri)
+            ImagePicker(
+                stockUri = stock.uri,
+                onPopToScreen = onPopToScreen
+            )
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun ImagePicker(stockUri: Uri?) {
+fun ImagePicker(
+    stockUri: Uri?,
+    onPopToScreen: (Route) -> Unit
+) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
@@ -91,7 +100,7 @@ fun ImagePicker(stockUri: Uri?) {
                 Text(text = stringResource(R.string.detail_button_add))
             }
             Button(
-                onClick = { /*TODO*/ }
+                onClick = { onPopToScreen(Route.StockListScreen()) }
             ) {
                 Text(text = "保存")
             }
