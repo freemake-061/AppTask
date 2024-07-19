@@ -22,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.apptask.ui.StockDetailScreen
 import com.example.apptask.ui.StockListScreen
-import com.example.apptask.ui.StockListViewModel
+import com.example.apptask.ui.StockViewModel
 import com.example.apptask.ui.theme.AppTaskTheme
 
 sealed class Route {
@@ -80,9 +80,9 @@ private fun AppTask() {
                     val parentEntry = remember(backStackEntry) {
                         navController.getBackStackEntry("Stock")
                     }
-                    val stockListViewModel: StockListViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                    val stockViewModel: StockViewModel = viewModel(viewModelStoreOwner = parentEntry)
                     StockListScreen(
-                        stockListViewModel = stockListViewModel,
+                        stockViewModel = stockViewModel,
                         onNavigateToScreen = onNavigateToScreen
                     )
                 }
@@ -97,11 +97,11 @@ private fun AppTask() {
                     val parentEntry = remember(backStackEntry) {
                         navController.getBackStackEntry("Stock")
                     }
-                    val stockListViewModel: StockListViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                    val stockViewModel: StockViewModel = viewModel(viewModelStoreOwner = parentEntry)
                     val index = backStackEntry.arguments?.getInt("index")
                     if (index != null) {
                         StockDetailScreen(
-                            stockListViewModel = stockListViewModel,
+                            stockViewModel = stockViewModel,
                             onPopToScreen = onPopToScreen,
                             index = index
                         )

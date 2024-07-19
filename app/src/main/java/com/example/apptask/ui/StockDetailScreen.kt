@@ -39,11 +39,11 @@ import com.example.apptask.Route
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockDetailScreen(
-    stockListViewModel: StockListViewModel,
+    stockViewModel: StockViewModel,
     onPopToScreen: (Route) -> Unit,
     index: Int
 ) {
-    val stockListUiState by stockListViewModel.uiState.collectAsState()
+    val stockListUiState by stockViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -79,7 +79,7 @@ fun StockDetailScreen(
             ImagePicker(
                 stockUri = stockListUiState.stockList[index].stock.uri,
                 onClickSave = { imageUri ->
-                    stockListViewModel.updateImageUri(index, imageUri)
+                    stockViewModel.updateImageUri(index, imageUri)
                 },
                 onPopToScreen = onPopToScreen
             )

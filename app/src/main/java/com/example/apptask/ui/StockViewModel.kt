@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.apptask.Constants
 
-class StockListViewModel : ViewModel() {
+class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState
 
