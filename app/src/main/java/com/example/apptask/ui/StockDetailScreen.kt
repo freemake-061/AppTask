@@ -79,6 +79,9 @@ fun StockDetailScreen(
             Text(text = "comment:${stockListUiState.stockList[index].stock.comment}")
             ImagePicker(
                 stockUri = stockListUiState.stockList[index].stock.uri,
+                onClickSave = { imageUri ->
+                    stockListViewModel.updateImageUri(index, imageUri)
+                },
                 onPopToScreen = onPopToScreen
             )
         }
@@ -89,6 +92,7 @@ fun StockDetailScreen(
 @Composable
 fun ImagePicker(
     stockUri: Uri?,
+    onClickSave: (Uri?) -> Unit,
     onPopToScreen: (Route) -> Unit
 ) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
@@ -104,7 +108,10 @@ fun ImagePicker(
                 Text(text = stringResource(R.string.detail_button_add))
             }
             Button(
-                onClick = { onPopToScreen(Route.StockListScreen()) }
+                onClick = {
+                    onPopToScreen(Route.StockListScreen())
+                    onClickSave(imageUri)
+                }
             ) {
                 Text(text = "保存")
             }

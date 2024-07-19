@@ -88,7 +88,7 @@ class StockListViewModel : ViewModel() {
         return isCheckedStock.sumOf { it.stock.quantity }
     }
 
-    fun updateImageUri(index: Int, uri: Uri) {
+    fun updateImageUri(index: Int, uri: Uri?) {
         val newStock = _uiState.value.stockList[index].stock.copy(
             uri = uri
         )
