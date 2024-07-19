@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.apptask.Constants
-import com.example.apptask.Stock
 
 class StockListViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
@@ -89,16 +88,12 @@ class StockListViewModel : ViewModel() {
     }
 
     fun updateImageUri(index: Int, uri: Uri?) {
-        val newStock = _uiState.value.stockList[index].stock.copy(
-            uri = uri
-        )
-        val newStockRow = _uiState.value.stockList[index].copy(
-            stock = newStock
-        )
+        val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
+        val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)
         val newStockList = _uiState.value.stockList.toMutableList()
         newStockList[index] = newStockRow
         _uiState.update { currentState ->
-            currentState.copy()
+            currentState.copy(stockList = newStockList)
         }
     }
 

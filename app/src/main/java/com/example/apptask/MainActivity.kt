@@ -1,7 +1,6 @@
 package com.example.apptask
 
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -59,8 +58,6 @@ class MainActivity : ComponentActivity() {
 private fun Preview() {
     AppTask()
 }
-
-data class Stock(var uri: Uri?, val time: String, val quantity: Int, val comment: String)
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
