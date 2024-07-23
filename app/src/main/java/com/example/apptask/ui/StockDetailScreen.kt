@@ -114,7 +114,8 @@ fun ImagePicker(
                 onClick = {
                     onClickSave(imageUri)
                     onPopToScreen(Route.StockListScreen())
-                }
+                },
+                enabled = imageUri != stockUri  // 画像に変更があった場合のみ活性化
             ) {
                 Text(text = stringResource(R.string.detail_button_save))
             }
