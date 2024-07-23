@@ -65,7 +65,11 @@ private fun AppTask() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navController = rememberNavController()
-            NavHost(navController = navController, route = "Stock", startDestination = "StockList") {
+            NavHost(
+                navController = navController,
+                route = "Stock",
+                startDestination = "StockList"
+            ) {
                 val onNavigateToScreen: (Route) -> Unit = { route ->
                     navController.navigate(route.value)
                 }

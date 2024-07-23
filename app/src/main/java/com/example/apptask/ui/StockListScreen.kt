@@ -105,7 +105,7 @@ fun StockListScreen(
                 },
                 actions = {
                     Menu(
-                        onClickClear = { stockViewModel.clearStock() },
+                        onClickClear = { stockViewModel.allClearStockList() },
                         onClickSum = {
                             stockViewModel.showSum()
                             stockViewModel.sumQuantity()
@@ -374,6 +374,7 @@ private fun FormDialog(
                         }
                     )
                 }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center

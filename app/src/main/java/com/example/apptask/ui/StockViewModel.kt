@@ -15,6 +15,7 @@ class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState
 
+    //  入力フォーム
     fun showForm() {
         _uiState.update { currentState ->
             currentState.copy(canShowForm = true)
@@ -46,6 +47,7 @@ class StockViewModel : ViewModel() {
         }
     }
 
+    //  リスト
     fun deleteStock(index: Int) {
         val newStockList = _uiState.value.stockList.minus(_uiState.value.stockList[index])
         _uiState.update { currentState ->
@@ -64,12 +66,14 @@ class StockViewModel : ViewModel() {
         }
     }
 
-    fun clearStock() {
+    //  メニュー > 全て削除
+    fun allClearStockList() {
         _uiState.update { currentState ->
             currentState.copy(stockList = listOf())
         }
     }
 
+    //  メニュー > 合計
     fun showSum() {
         _uiState.update { currentState ->
             currentState.copy(canShowSum = true)
@@ -87,6 +91,7 @@ class StockViewModel : ViewModel() {
         return isCheckedStock.sumOf { it.stock.quantity }
     }
 
+    //  詳細画面
     fun updateImageUri(index: Int, uri: Uri?) {
         val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
         val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)
