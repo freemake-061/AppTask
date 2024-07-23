@@ -82,7 +82,6 @@ fun StockListScreen(
         FormDialog(
             onDismissRequest = { stockViewModel.closeForm() },
             onClickAdd = { quantity, comment ->
-                stockViewModel.closeForm()
                 stockViewModel.addStock(quantity, comment)
             }
         )
@@ -138,7 +137,7 @@ fun StockListScreen(
 }
 
 @Composable
-fun StockList(
+private fun StockList(
     stockListUiState: StockListUiState,
     onCheckedChange: (Int) -> Unit,
     onClickStock: (Int) -> Unit,
@@ -159,7 +158,7 @@ fun StockList(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StockRow(
+private fun StockRow(
     index: Int,
     stockRowUiState: StockRowUiState,
     onCheckedChange: (Int) -> Unit,
@@ -222,7 +221,9 @@ private fun Menu(
     onClickSum: () -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    IconButton(onClick = { expanded = !expanded }) {
+    IconButton(
+        onClick = { expanded = !expanded }
+    ) {
         Icon(
             imageVector = Icons.Filled.Menu,
             contentDescription = stringResource(R.string.home_button_menu_desc)
@@ -336,7 +337,9 @@ private fun FormDialog(
                                 format12Hour?.let { this.format12Hour = Constants.CLOCK_FORMAT }
                                 format24Hour?.let { this.format24Hour = Constants.CLOCK_FORMAT }
                                 timeZone?.let { this.timeZone = null }
-                                if (isDarkTheme) { setTextColor(context.getColor(R.color.white)) }
+                                if (isDarkTheme) {
+                                    setTextColor(context.getColor(R.color.white))
+                                }
                             }
                         }
                     )
@@ -375,7 +378,10 @@ private fun FormDialog(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { onClickAdd(quantity, comment) }
+                        onClick = {
+                            onDismissRequest()
+                            onClickAdd(quantity, comment)
+                        }
                     ) {
                         Text(text = stringResource(R.string.form_button_add))
                     }

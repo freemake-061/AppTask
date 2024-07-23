@@ -30,13 +30,11 @@ class StockViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addStock(quantity: Int, comment: String) {
-        val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
-        val currentTime = formatTime.format(LocalDateTime.now())
         val newStockRow = StockRowUiState(
             isChecked = false,
             stock = Stock(
                 uri = null,
-                time = currentTime,
+                time = getCurrentTime(),
                 quantity = quantity,
                 comment = comment
             )
@@ -45,6 +43,12 @@ class StockViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getCurrentTime(): String {
+        val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+        return formatTime.format(LocalDateTime.now())
     }
 
     //  リスト

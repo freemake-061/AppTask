@@ -60,7 +60,9 @@ fun StockDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onPopToScreen(Route.StockListScreen()) }) {
+                    IconButton(
+                        onClick = { onPopToScreen(Route.StockListScreen()) }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.detail_button_back_desc)
@@ -89,7 +91,7 @@ fun StockDetailScreen(
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun ImagePicker(
+private fun ImagePicker(
     stockUri: Uri?,
     onClickSave: (Uri?) -> Unit,
     onPopToScreen: (Route) -> Unit
