@@ -39,9 +39,9 @@ import com.example.apptask.Route
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockDetailScreen(
+    index: Int,
     stockViewModel: StockViewModel,
-    onPopToScreen: (Route) -> Unit,
-    index: Int
+    onPopToScreen: (Route) -> Unit
 ) {
     val stockListUiState by stockViewModel.uiState.collectAsState()
 
@@ -82,8 +82,8 @@ fun StockDetailScreen(
                 stockUri = stockListUiState.stockList[index].stock.uri,
                 onClickSave = { imageUri ->
                     stockViewModel.updateImageUri(index, imageUri)
-                },
-                onPopToScreen = onPopToScreen
+                    onPopToScreen(Route.StockListScreen())
+                }
             )
         }
     }
@@ -93,8 +93,7 @@ fun StockDetailScreen(
 @Composable
 private fun ImagePicker(
     stockUri: Uri?,
-    onClickSave: (Uri?) -> Unit,
-    onPopToScreen: (Route) -> Unit
+    onClickSave: (Uri?) -> Unit
 ) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
@@ -110,14 +109,12 @@ private fun ImagePicker(
             }
             Button(
                 onClick = { imageUri = null },
+                enabled = imageUri != null
             ) {
                 Text(text = stringResource(R.string.detail_button_delete))
             }
             Button(
-                onClick = {
-                    onClickSave(imageUri)
-                    onPopToScreen(Route.StockListScreen())
-                },
+                onClick = { onClickSave(imageUri) },
                 enabled = imageUri != stockUri  // 画像に変更があった場合のみ活性化
             ) {
                 Text(text = stringResource(R.string.detail_button_save))

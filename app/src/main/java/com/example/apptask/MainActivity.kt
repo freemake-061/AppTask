@@ -105,9 +105,9 @@ private fun AppTask() {
                     val index = backStackEntry.arguments?.getInt("index")
                     if (index != null) {
                         StockDetailScreen(
+                            index = index,
                             stockViewModel = stockViewModel,
-                            onPopToScreen = onPopToScreen,
-                            index = index
+                            onPopToScreen = onPopToScreen
                         )
                     }
                 }

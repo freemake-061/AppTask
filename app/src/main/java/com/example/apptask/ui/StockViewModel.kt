@@ -30,7 +30,7 @@ class StockViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addStock(quantity: Int, comment: String) {
-        val newStockRow = StockRowUiState(
+        val newStockRow = StockRow(
             isChecked = false,
             stock = Stock(
                 uri = null,
@@ -53,18 +53,19 @@ class StockViewModel : ViewModel() {
 
     //  リスト
     fun deleteStock(index: Int) {
-        val newStockList = _uiState.value.stockList.minus(_uiState.value.stockList[index])
+        val targetStockRow = _uiState.value.stockList[index]
+        val newStockList = _uiState.value.stockList.minus(targetStockRow)
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
     }
 
     fun onCheckedChange(index: Int) {
-        val newStock = _uiState.value.stockList[index].copy(
+        val newStockRow = _uiState.value.stockList[index].copy(
             isChecked = !_uiState.value.stockList[index].isChecked
         )
         val newStockList = _uiState.value.stockList.toMutableList()
-        newStockList[index] = newStock
+        newStockList[index] = newStockRow
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }

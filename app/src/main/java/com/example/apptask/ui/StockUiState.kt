@@ -9,13 +9,13 @@ data class Stock(
     val comment: String
 )
 
-data class StockRowUiState(
+data class StockRow(
     val isChecked: Boolean,
     val stock: Stock
 )
 
 data class StockListUiState(
-    val stockList: List<StockRowUiState> = listOf(),
+    val stockList: List<StockRow> = listOf(),
     val canShowForm: Boolean = false,
     val canShowSum: Boolean = false
 )

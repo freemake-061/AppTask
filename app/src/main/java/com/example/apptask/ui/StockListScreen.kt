@@ -147,7 +147,7 @@ private fun StockList(
         itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
             StockRow(
                 index = index,
-                stockRowUiState = stockRowUiState,
+                stockRow = stockRowUiState,
                 onCheckedChange = onCheckedChange,
                 onClickStock = onClickStock,
                 onClickDelete = onClickDelete
@@ -160,13 +160,13 @@ private fun StockList(
 @Composable
 private fun StockRow(
     index: Int,
-    stockRowUiState: StockRowUiState,
+    stockRow: StockRow,
     onCheckedChange: (Int) -> Unit,
     onClickStock: (Int) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     var rowColor = Color(0xFFFFFBFE)
-    if (stockRowUiState.isChecked) {
+    if (stockRow.isChecked) {
         rowColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         rowColor = Color(0xFFE6E6FA)
@@ -189,19 +189,19 @@ private fun StockRow(
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = stockRowUiState.isChecked,
+                checked = stockRow.isChecked,
                 onCheckedChange = { onCheckedChange(index) }
             )
             AsyncImage(
-                model = stockRowUiState.stock.uri,
+                model = stockRow.stock.uri,
                 contentDescription = stringResource(R.string.list_image_desc),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.height(20.dp).width(20.dp)
             )
-            Text(text = stockRowUiState.stock.time)
-            Text(text = "%,d".format(stockRowUiState.stock.quantity))
+            Text(text = stockRow.stock.time)
+            Text(text = "%,d".format(stockRow.stock.quantity))
             Text(
-                text = stockRowUiState.stock.comment,
+                text = stockRow.stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -337,9 +337,7 @@ private fun FormDialog(
                                 format12Hour?.let { this.format12Hour = Constants.CLOCK_FORMAT }
                                 format24Hour?.let { this.format24Hour = Constants.CLOCK_FORMAT }
                                 timeZone?.let { this.timeZone = null }
-                                if (isDarkTheme) {
-                                    setTextColor(context.getColor(R.color.white))
-                                }
+                                if (isDarkTheme) setTextColor(context.getColor(R.color.white))
                             }
                         }
                     )
