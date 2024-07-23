@@ -100,16 +100,11 @@ fun StockListScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
-                title = {
-                    Text(text = stringResource(R.string.home_topbar_title))
-                },
+                title = { Text(text = stringResource(R.string.home_topbar_title)) },
                 actions = {
                     Menu(
                         onClickClear = { stockViewModel.allClearStockList() },
-                        onClickSum = {
-                            stockViewModel.showSum()
-                            stockViewModel.sumQuantity()
-                        }
+                        onClickSum = { stockViewModel.showSum() }
                     )
                 }
             )
@@ -137,6 +132,26 @@ fun StockListScreen(
                 onClickDelete = { index ->
                     stockViewModel.deleteStock(index)
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun StockList(
+    stockListUiState: StockListUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
+) {
+    LazyColumn {
+        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
+            StockRow(
+                index = index,
+                stockRowUiState = stockRowUiState,
+                onCheckedChange = onCheckedChange,
+                onClickStock = onClickStock,
+                onClickDelete = onClickDelete
             )
         }
     }
@@ -202,26 +217,6 @@ fun StockRow(
 }
 
 @Composable
-fun StockList(
-    stockListUiState: StockListUiState,
-    onCheckedChange: (Int) -> Unit,
-    onClickStock: (Int) -> Unit,
-    onClickDelete: (Int) -> Unit
-) {
-    LazyColumn {
-        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
-            StockRow(
-                index = index,
-                stockRowUiState = stockRowUiState,
-                onCheckedChange = onCheckedChange,
-                onClickStock = onClickStock,
-                onClickDelete = onClickDelete
-            )
-        }
-    }
-}
-
-@Composable
 private fun Menu(
     onClickClear: () -> Unit,
     onClickSum: () -> Unit
@@ -263,7 +258,9 @@ private fun SumDialog(
         onDismissRequest = { onDismissRequest() },
         text = { Text(stringResource(R.string.sum_label_message, sum)) },
         confirmButton = {
-            TextButton(onClick = { onDismissRequest() }) {
+            TextButton(
+                onClick = { onDismissRequest() },
+            ) {
                 Text(stringResource(R.string.sum_button_ok))
             }
         }
@@ -339,9 +336,7 @@ private fun FormDialog(
                                 format12Hour?.let { this.format12Hour = Constants.CLOCK_FORMAT }
                                 format24Hour?.let { this.format24Hour = Constants.CLOCK_FORMAT }
                                 timeZone?.let { this.timeZone = null }
-                                if (isDarkTheme) {
-                                    setTextColor(context.getColor(R.color.white))
-                                }
+                                if (isDarkTheme) { setTextColor(context.getColor(R.color.white)) }
                             }
                         }
                     )
@@ -380,9 +375,7 @@ private fun FormDialog(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = {
-                            onClickAdd(quantity, comment)
-                        }
+                        onClick = { onClickAdd(quantity, comment) }
                     ) {
                         Text(text = stringResource(R.string.form_button_add))
                     }
