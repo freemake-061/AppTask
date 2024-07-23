@@ -81,9 +81,6 @@ fun StockDetailScreen(
                 onClickSave = { imageUri ->
                     stockViewModel.updateImageUri(index, imageUri)
                 },
-                onClickDelete = {
-                    stockViewModel.updateImageUri(index, null)
-                },
                 onPopToScreen = onPopToScreen
             )
         }
@@ -95,7 +92,6 @@ fun StockDetailScreen(
 fun ImagePicker(
     stockUri: Uri?,
     onClickSave: (Uri?) -> Unit,
-    onClickDelete: () -> Unit,
     onPopToScreen: (Route) -> Unit
 ) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
@@ -111,6 +107,11 @@ fun ImagePicker(
                 Text(text = stringResource(R.string.detail_button_add))
             }
             Button(
+                onClick = { imageUri = null },
+            ) {
+                Text(text = stringResource(R.string.detail_button_delete))
+            }
+            Button(
                 onClick = {
                     onClickSave(imageUri)
                     onPopToScreen(Route.StockListScreen())
@@ -118,14 +119,6 @@ fun ImagePicker(
                 enabled = imageUri != stockUri  // 画像に変更があった場合のみ活性化
             ) {
                 Text(text = stringResource(R.string.detail_button_save))
-            }
-            Button(
-                onClick = {
-                    imageUri = null
-                    onClickDelete()
-                },
-            ) {
-                Text(text = stringResource(R.string.detail_button_delete))
             }
         }
         Box(
