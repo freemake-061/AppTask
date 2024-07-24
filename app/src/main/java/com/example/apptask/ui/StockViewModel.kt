@@ -1,5 +1,6 @@
 package com.example.apptask.ui
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
@@ -9,9 +10,8 @@ import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.apptask.Constants
-import com.example.apptask.Stock
 
-class StockListViewModel : ViewModel() {
+class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState
 
@@ -85,6 +85,16 @@ class StockListViewModel : ViewModel() {
     fun sumQuantity(): Int {
         val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
         return isCheckedStock.sumOf { it.stock.quantity }
+    }
+
+    fun updateImageUri(index: Int, uri: Uri?) {
+        val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
+        val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)
+        val newStockList = _uiState.value.stockList.toMutableList()
+        newStockList[index] = newStockRow
+        _uiState.update { currentState ->
+            currentState.copy(stockList = newStockList)
+        }
     }
 
 }

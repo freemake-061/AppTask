@@ -1,7 +1,6 @@
 package com.example.apptask
 
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,8 +11,10 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.apptask.ui.StockDetailScreen
 import com.example.apptask.ui.StockListScreen
+import com.example.apptask.ui.StockViewModel
 import com.example.apptask.ui.theme.AppTaskTheme
 
 sealed class Route {
@@ -30,8 +32,8 @@ sealed class Route {
         override val value: String = "StockList"
     }
 
-    class StockDetailScreen(stock: Stock) : Route() {
-        override val value: String = "StockDetail/?stringUri=${stock.uri.toString()}/${stock.time}/${stock.quantity}/${stock.comment}"
+    class StockDetailScreen(index: Int) : Route() {
+        override val value: String = "StockDetail/${index}"
     }
 }
 
@@ -57,15 +59,13 @@ private fun Preview() {
     AppTask()
 }
 
-data class Stock(var uri: Uri?, val time: String, val quantity: Int, val comment: String)
-
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 private fun AppTask() {
     AppTaskTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "StockList") {
+            NavHost(navController = navController, route = "Stock", startDestination = "StockList") {
                 val onNavigateToScreen: (Route) -> Unit = { route ->
                     navController.navigate(route.value)
                 }
@@ -76,36 +76,34 @@ private fun AppTask() {
                     route = "StockList",
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth }) }
-                ) {
-                    StockListScreen(onNavigateToScreen = onNavigateToScreen)
+                ) {backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("Stock")
+                    }
+                    val stockViewModel: StockViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                    StockListScreen(
+                        stockViewModel = stockViewModel,
+                        onNavigateToScreen = onNavigateToScreen
+                    )
                 }
                 composable(
-                    route = "StockDetail/?stringUri={stringUri}/{time}/{quantity}/{comment}",
+                    route = "StockDetail/{index}",
                     arguments = listOf(
-                        navArgument("stringUri") {
-                            type = NavType.StringType
-                            nullable = true
-                        },
-                        navArgument("time") { type = NavType.StringType },
-                        navArgument("quantity") { type = NavType.IntType },
-                        navArgument("comment") { type = NavType.StringType }
+                        navArgument("index") { type = NavType.IntType }
                     ),
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
-                ) { backStackEntry ->
-                    val stringUri = backStackEntry.arguments?.getString("stringUri")
-                    val uri = if (stringUri != null) {
-                        Uri.parse(stringUri)
-                    } else {
-                        null
+                ) {backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry("Stock")
                     }
-                    val time = backStackEntry.arguments?.getString("time")
-                    val quantity = backStackEntry.arguments?.getInt("quantity")
-                    val comment = backStackEntry.arguments?.getString("comment")
-                    if (time != null && quantity != null && comment != null) {
+                    val stockViewModel: StockViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                    val index = backStackEntry.arguments?.getInt("index")
+                    if (index != null) {
                         StockDetailScreen(
+                            stockViewModel = stockViewModel,
                             onPopToScreen = onPopToScreen,
-                            stock = Stock(uri, time, quantity, comment)
+                            index = index
                         )
                     }
                 }

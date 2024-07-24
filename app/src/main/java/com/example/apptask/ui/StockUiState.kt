@@ -1,6 +1,13 @@
 package com.example.apptask.ui
 
-import com.example.apptask.Stock
+import android.net.Uri
+
+data class Stock(
+    val uri: Uri?,
+    val time: String,
+    val quantity: Int,
+    val comment: String
+)
 
 data class StockRowUiState(
     val isChecked: Boolean,

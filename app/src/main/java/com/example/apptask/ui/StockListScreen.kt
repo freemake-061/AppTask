@@ -61,7 +61,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
@@ -70,24 +69,24 @@ import com.example.apptask.Route
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockListScreen(
-    stockListViewModel: StockListViewModel = viewModel(),
+    stockViewModel: StockViewModel,
     onNavigateToScreen: (Route) -> Unit
 ) {
-    val stockListUiState by stockListViewModel.uiState.collectAsState()
+    val stockListUiState by stockViewModel.uiState.collectAsState()
 
     if (stockListUiState.canShowForm) {
         FormDialog(
-            onDismissRequest = { stockListViewModel.closeForm() },
+            onDismissRequest = { stockViewModel.closeForm() },
             onClickAdd = { quantity, comment ->
-                stockListViewModel.closeForm()
-                stockListViewModel.addStock(quantity, comment)
+                stockViewModel.closeForm()
+                stockViewModel.addStock(quantity, comment)
             }
         )
     }
     if (stockListUiState.canShowSum) {
         SumDialog(
-            sum = stockListViewModel.sumQuantity(),
-            onDismissRequest = { stockListViewModel.closeSum() }
+            sum = stockViewModel.sumQuantity(),
+            onDismissRequest = { stockViewModel.closeSum() }
         )
     }
     Scaffold(
@@ -102,17 +101,17 @@ fun StockListScreen(
                 },
                 actions = {
                     Menu(
-                        onClickClear = { stockListViewModel.clearStock() },
+                        onClickClear = { stockViewModel.clearStock() },
                         onClickSum = {
-                            stockListViewModel.showSum()
-                            stockListViewModel.sumQuantity()
+                            stockViewModel.showSum()
+                            stockViewModel.sumQuantity()
                         }
                     )
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { stockListViewModel.showForm() }) {
+            FloatingActionButton(onClick = { stockViewModel.showForm() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.home_button_add_desc)
@@ -126,13 +125,13 @@ fun StockListScreen(
             StockList(
                 stockListUiState = stockListUiState,
                 onCheckedChange = { index ->
-                    stockListViewModel.onCheckedChange(index)
+                    stockViewModel.onCheckedChange(index)
                 },
                 onClickStock = { index ->
-                    onNavigateToScreen(Route.StockDetailScreen(stockListUiState.stockList[index].stock))
+                    onNavigateToScreen(Route.StockDetailScreen(index))
                 },
                 onClickDelete = { index ->
-                    stockListViewModel.deleteStock(index)
+                    stockViewModel.deleteStock(index)
                 }
             )
         }

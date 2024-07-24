@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,15 +34,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.example.apptask.R
 import com.example.apptask.Route
-import com.example.apptask.Stock
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockDetailScreen(
+    stockViewModel: StockViewModel,
     onPopToScreen: (Route) -> Unit,
-    stock: Stock
+    index: Int
 ) {
+    val stockListUiState by stockViewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -51,7 +54,7 @@ fun StockDetailScreen(
                 ),
                 title = {
                     Text(
-                        text = stock.comment,
+                        text = stockListUiState.stockList[index].stock.comment,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -70,11 +73,14 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "time:${stock.time}")
-            Text(text = "quantity:${stock.quantity}")
-            Text(text = "comment:${stock.comment}")
+            Text(text = "time:${stockListUiState.stockList[index].stock.time}")
+            Text(text = "quantity:${stockListUiState.stockList[index].stock.quantity}")
+            Text(text = "comment:${stockListUiState.stockList[index].stock.comment}")
             ImagePicker(
-                stockUri = stock.uri,
+                stockUri = stockListUiState.stockList[index].stock.uri,
+                onClickSave = { imageUri ->
+                    stockViewModel.updateImageUri(index, imageUri)
+                },
                 onPopToScreen = onPopToScreen
             )
         }
@@ -85,6 +91,7 @@ fun StockDetailScreen(
 @Composable
 fun ImagePicker(
     stockUri: Uri?,
+    onClickSave: (Uri?) -> Unit,
     onPopToScreen: (Route) -> Unit
 ) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
@@ -100,7 +107,10 @@ fun ImagePicker(
                 Text(text = stringResource(R.string.detail_button_add))
             }
             Button(
-                onClick = { onPopToScreen(Route.StockListScreen()) }
+                onClick = {
+                    onClickSave(imageUri)
+                    onPopToScreen(Route.StockListScreen())
+                }
             ) {
                 Text(text = "保存")
             }
