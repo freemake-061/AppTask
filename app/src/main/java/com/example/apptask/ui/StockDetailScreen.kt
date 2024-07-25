@@ -65,7 +65,7 @@ fun StockDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.detail_button_back_desc)
+                            contentDescription = stringResource(R.string.description_button_back_detail)
                         )
                     }
                 }
@@ -105,26 +105,26 @@ private fun ImagePicker(
             Button(
                 onClick = { launcher.launch("image/*") }
             ) {
-                Text(text = stringResource(R.string.detail_button_add))
+                Text(text = stringResource(R.string.button_add_detail))
             }
             Button(
                 onClick = { imageUri = null },
                 enabled = imageUri != null
             ) {
-                Text(text = stringResource(R.string.detail_button_delete))
+                Text(text = stringResource(R.string.button_delete_detail))
             }
             Button(
                 onClick = { onClickSave(imageUri) },
                 enabled = imageUri != stockUri  // 画像に変更があった場合のみ活性化
             ) {
-                Text(text = stringResource(R.string.detail_button_save))
+                Text(text = stringResource(R.string.button_save_detail))
             }
         }
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            AsyncImage(model = imageUri, contentDescription = stringResource(R.string.detail_image_desc))
+            AsyncImage(model = imageUri, contentDescription = stringResource(R.string.description_image_detail))
         }
     }
 }

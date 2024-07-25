@@ -1,30 +1,31 @@
 <resources>
     <string name="app_name">AppTask</string>
 
-    <string name="home_topbar_title">リスト</string>
-    <string name="home_button_menu_desc">メニュー</string>
-    <string name="home_button_add_desc">フォームの表示</string>
+    <string name="topbar_title_home">リスト</string>
+    <string name="topbar_count_home">個を選択中</string>
+    <string name="description_button_menu_home">メニュー</string>
+    <string name="description_button_add_home">フォームの表示</string>
 
-    <string name="form_label_title">アイテムを追加</string>
-    <string name="form_label_quantity">数量：</string>
-    <string name="form_button_close_desc">閉じる</string>
-    <string name="form_button_plus">+</string>
-    <string name="form_button_minus">-</string>
-    <string name="form_button_add">追加</string>
-    <string name="form_placeholder">コメントを入力</string>
+    <string name="label_title_form">アイテムを追加</string>
+    <string name="label_quantity_form">数量：</string>
+    <string name="description_button_close_form">閉じる</string>
+    <string name="button_plus_form">+</string>
+    <string name="button_minus_form">-</string>
+    <string name="button_add_form">追加</string>
+    <string name="placeholder_form">コメントを入力</string>
 
-    <string name="menu_button_clear">全て削除</string>
-    <string name="menu_button_sum">選択された数量を合計</string>
+    <string name="button_clear_menu">全て削除</string>
+    <string name="button_sum_menu">選択された数量を合計</string>
 
-    <string name="sum_label_message">合計 %1$d です</string>
-    <string name="sum_button_ok">OK</string>
+    <string name="label_message_sum">合計 %1$d です</string>
+    <string name="button_ok_sum">OK</string>
 
-    <string name="list_image_desc">画像</string>
-    <string name="list_button_delete_desc">削除</string>
+    <string name="description_image_list">画像</string>
+    <string name="description_button_delete_list">削除</string>
 
-    <string name="detail_button_back_desc">戻る</string>
-    <string name="detail_button_add">画像を追加</string>
-    <string name="detail_button_save">変更を保存</string>
-    <string name="detail_button_delete">画像を削除</string>
-    <string name="detail_image_desc">画像</string>
+    <string name="description_button_back_detail">戻る</string>
+    <string name="button_add_detail">画像を追加</string>
+    <string name="button_save_detail">変更を保存</string>
+    <string name="button_delete_detail">画像を削除</string>
+    <string name="description_image_detail">画像</string>
 </resources>
