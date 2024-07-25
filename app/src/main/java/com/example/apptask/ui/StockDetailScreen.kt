@@ -39,9 +39,9 @@ import com.example.apptask.Route
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockDetailScreen(
+    index: Int,
     stockViewModel: StockViewModel,
-    onPopToScreen: (Route) -> Unit,
-    index: Int
+    onPopToScreen: (Route) -> Unit
 ) {
     val stockListUiState by stockViewModel.uiState.collectAsState()
 
@@ -60,7 +60,9 @@ fun StockDetailScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onPopToScreen(Route.StockListScreen()) }) {
+                    IconButton(
+                        onClick = { onPopToScreen(Route.StockListScreen()) }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.detail_button_back_desc)
@@ -80,8 +82,8 @@ fun StockDetailScreen(
                 stockUri = stockListUiState.stockList[index].stock.uri,
                 onClickSave = { imageUri ->
                     stockViewModel.updateImageUri(index, imageUri)
-                },
-                onPopToScreen = onPopToScreen
+                    onPopToScreen(Route.StockListScreen())
+                }
             )
         }
     }
@@ -89,10 +91,9 @@ fun StockDetailScreen(
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun ImagePicker(
+private fun ImagePicker(
     stockUri: Uri?,
-    onClickSave: (Uri?) -> Unit,
-    onPopToScreen: (Route) -> Unit
+    onClickSave: (Uri?) -> Unit
 ) {
     var imageUri: Uri? by rememberSaveable { mutableStateOf(stockUri) }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
@@ -107,12 +108,16 @@ fun ImagePicker(
                 Text(text = stringResource(R.string.detail_button_add))
             }
             Button(
-                onClick = {
-                    onClickSave(imageUri)
-                    onPopToScreen(Route.StockListScreen())
-                }
+                onClick = { imageUri = null },
+                enabled = imageUri != null
             ) {
-                Text(text = "保存")
+                Text(text = stringResource(R.string.detail_button_delete))
+            }
+            Button(
+                onClick = { onClickSave(imageUri) },
+                enabled = imageUri != stockUri  // 画像に変更があった場合のみ活性化
+            ) {
+                Text(text = stringResource(R.string.detail_button_save))
             }
         }
         Box(

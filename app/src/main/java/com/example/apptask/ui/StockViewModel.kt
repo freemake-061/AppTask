@@ -15,6 +15,7 @@ class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState
 
+    //  入力フォーム
     fun showForm() {
         _uiState.update { currentState ->
             currentState.copy(canShowForm = true)
@@ -29,13 +30,11 @@ class StockViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addStock(quantity: Int, comment: String) {
-        val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
-        val currentTime = formatTime.format(LocalDateTime.now())
-        val newStockRow = StockRowUiState(
+        val newStockRow = StockRow(
             isChecked = false,
             stock = Stock(
                 uri = null,
-                time = currentTime,
+                time = getCurrentTime(),
                 quantity = quantity,
                 comment = comment
             )
@@ -46,30 +45,40 @@ class StockViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getCurrentTime(): String {
+        val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+        return formatTime.format(LocalDateTime.now())
+    }
+
+    //  リスト
     fun deleteStock(index: Int) {
-        val newStockList = _uiState.value.stockList.minus(_uiState.value.stockList[index])
+        val targetStockRow = _uiState.value.stockList[index]
+        val newStockList = _uiState.value.stockList.minus(targetStockRow)
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
     }
 
     fun onCheckedChange(index: Int) {
-        val newStock = _uiState.value.stockList[index].copy(
+        val newStockRow = _uiState.value.stockList[index].copy(
             isChecked = !_uiState.value.stockList[index].isChecked
         )
         val newStockList = _uiState.value.stockList.toMutableList()
-        newStockList[index] = newStock
+        newStockList[index] = newStockRow
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
     }
 
-    fun clearStock() {
+    //  メニュー > 全て削除
+    fun allClearStockList() {
         _uiState.update { currentState ->
             currentState.copy(stockList = listOf())
         }
     }
 
+    //  メニュー > 合計
     fun showSum() {
         _uiState.update { currentState ->
             currentState.copy(canShowSum = true)
@@ -87,6 +96,7 @@ class StockViewModel : ViewModel() {
         return isCheckedStock.sumOf { it.stock.quantity }
     }
 
+    //  詳細画面
     fun updateImageUri(index: Int, uri: Uri?) {
         val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
         val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)

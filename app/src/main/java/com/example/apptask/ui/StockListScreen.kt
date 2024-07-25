@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
@@ -52,6 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -61,6 +64,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
+import coil.compose.AsyncImage
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
@@ -78,7 +82,6 @@ fun StockListScreen(
         FormDialog(
             onDismissRequest = { stockViewModel.closeForm() },
             onClickAdd = { quantity, comment ->
-                stockViewModel.closeForm()
                 stockViewModel.addStock(quantity, comment)
             }
         )
@@ -97,15 +100,16 @@ fun StockListScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 title = {
-                    Text(text = stringResource(R.string.home_topbar_title))
+                    if (stockListUiState.stockList.none{ it.isChecked }) {
+                        Text(text = stringResource(R.string.home_topbar_title))
+                    } else {
+                        Text(text = "%,d".format(stockListUiState.stockList.count{ it.isChecked }) + "個を選択中")
+                    }
                 },
                 actions = {
                     Menu(
-                        onClickClear = { stockViewModel.clearStock() },
-                        onClickSum = {
-                            stockViewModel.showSum()
-                            stockViewModel.sumQuantity()
-                        }
+                        onClickClear = { stockViewModel.allClearStockList() },
+                        onClickSum = { stockViewModel.showSum() }
                     )
                 }
             )
@@ -138,17 +142,37 @@ fun StockListScreen(
     }
 }
 
+@Composable
+private fun StockList(
+    stockListUiState: StockListUiState,
+    onCheckedChange: (Int) -> Unit,
+    onClickStock: (Int) -> Unit,
+    onClickDelete: (Int) -> Unit
+) {
+    LazyColumn {
+        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
+            StockRow(
+                index = index,
+                stockRow = stockRowUiState,
+                onCheckedChange = onCheckedChange,
+                onClickStock = onClickStock,
+                onClickDelete = onClickDelete
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun StockRow(
+private fun StockRow(
     index: Int,
-    stockRowUiState: StockRowUiState,
+    stockRow: StockRow,
     onCheckedChange: (Int) -> Unit,
     onClickStock: (Int) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     var rowColor = Color(0xFFFFFBFE)
-    if (stockRowUiState.isChecked) {
+    if (stockRow.isChecked) {
         rowColor = Color(0xFF00FF00)
     } else if (index % 2 == 1) {
         rowColor = Color(0xFFE6E6FA)
@@ -171,13 +195,21 @@ fun StockRow(
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Checkbox(
-                checked = stockRowUiState.isChecked,
+                checked = stockRow.isChecked,
                 onCheckedChange = { onCheckedChange(index) }
             )
-            Text(text = stockRowUiState.stock.time)
-            Text(text = "%,d".format(stockRowUiState.stock.quantity))
+            AsyncImage(
+                model = stockRow.stock.uri,
+                contentDescription = stringResource(R.string.list_image_desc),
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(20.dp)
+            )
+            Text(text = stockRow.stock.time)
+            Text(text = "%,d".format(stockRow.stock.quantity))
             Text(
-                text = stockRowUiState.stock.comment,
+                text = stockRow.stock.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -192,32 +224,14 @@ fun StockRow(
 }
 
 @Composable
-fun StockList(
-    stockListUiState: StockListUiState,
-    onCheckedChange: (Int) -> Unit,
-    onClickStock: (Int) -> Unit,
-    onClickDelete: (Int) -> Unit
-) {
-    LazyColumn {
-        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
-            StockRow(
-                index = index,
-                stockRowUiState = stockRowUiState,
-                onCheckedChange = onCheckedChange,
-                onClickStock = onClickStock,
-                onClickDelete = onClickDelete
-            )
-        }
-    }
-}
-
-@Composable
 private fun Menu(
     onClickClear: () -> Unit,
     onClickSum: () -> Unit
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    IconButton(onClick = { expanded = !expanded }) {
+    IconButton(
+        onClick = { expanded = !expanded }
+    ) {
         Icon(
             imageVector = Icons.Filled.Menu,
             contentDescription = stringResource(R.string.home_button_menu_desc)
@@ -253,7 +267,9 @@ private fun SumDialog(
         onDismissRequest = { onDismissRequest() },
         text = { Text(stringResource(R.string.sum_label_message, sum)) },
         confirmButton = {
-            TextButton(onClick = { onDismissRequest() }) {
+            TextButton(
+                onClick = { onDismissRequest() },
+            ) {
                 Text(stringResource(R.string.sum_button_ok))
             }
         }
@@ -329,9 +345,7 @@ private fun FormDialog(
                                 format12Hour?.let { this.format12Hour = Constants.CLOCK_FORMAT }
                                 format24Hour?.let { this.format24Hour = Constants.CLOCK_FORMAT }
                                 timeZone?.let { this.timeZone = null }
-                                if (isDarkTheme) {
-                                    setTextColor(context.getColor(R.color.white))
-                                }
+                                if (isDarkTheme) setTextColor(context.getColor(R.color.white))
                             }
                         }
                     )
@@ -364,12 +378,14 @@ private fun FormDialog(
                         }
                     )
                 }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
                         onClick = {
+                            onDismissRequest()
                             onClickAdd(quantity, comment)
                         }
                     ) {
