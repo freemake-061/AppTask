@@ -101,9 +101,9 @@ fun StockListScreen(
                 ),
                 title = {
                     if (stockListUiState.stockList.none{ it.isChecked }) {
-                        Text(text = stringResource(R.string.home_topbar_title))
+                        Text(text = stringResource(R.string.topbar_title_home))
                     } else {
-                        Text(text = "%,d".format(stockListUiState.stockList.count{ it.isChecked }) + "個を選択中")
+                        Text(text = "%,d".format(stockListUiState.stockList.count{ it.isChecked }) + stringResource(R.string.topbar_count_home))
                     }
                 },
                 actions = {
@@ -118,7 +118,7 @@ fun StockListScreen(
             FloatingActionButton(onClick = { stockViewModel.showForm() }) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.home_button_add_desc)
+                    contentDescription = stringResource(R.string.description_button_add_home)
                 )
             }
         }
@@ -200,7 +200,7 @@ private fun StockRow(
             )
             AsyncImage(
                 model = stockRow.stock.uri,
-                contentDescription = stringResource(R.string.list_image_desc),
+                contentDescription = stringResource(R.string.description_image_list),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .height(20.dp)
@@ -216,7 +216,7 @@ private fun StockRow(
             )
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.list_button_delete_desc),
+                contentDescription = stringResource(R.string.description_button_delete_list),
                 modifier = Modifier.clickable { onClickDelete(index) }
             )
         }
@@ -234,21 +234,21 @@ private fun Menu(
     ) {
         Icon(
             imageVector = Icons.Filled.Menu,
-            contentDescription = stringResource(R.string.home_button_menu_desc)
+            contentDescription = stringResource(R.string.description_button_menu_home)
         )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.menu_button_clear)) },
+                text = { Text(stringResource(R.string.button_clear_menu)) },
                 onClick = {
                     expanded = false
                     onClickClear()
                 }
             )
             DropdownMenuItem(
-                text = { Text(stringResource(R.string.menu_button_sum)) },
+                text = { Text(stringResource(R.string.button_sum_menu)) },
                 onClick = {
                     expanded = false
                     onClickSum()
@@ -265,12 +265,12 @@ private fun SumDialog(
 ) {
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
-        text = { Text(stringResource(R.string.sum_label_message, sum)) },
+        text = { Text(stringResource(R.string.label_message_sum, sum)) },
         confirmButton = {
             TextButton(
                 onClick = { onDismissRequest() },
             ) {
-                Text(stringResource(R.string.sum_button_ok))
+                Text(stringResource(R.string.button_ok_sum))
             }
         }
     )
@@ -297,12 +297,12 @@ private fun FormDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = stringResource(R.string.form_label_title),
+                        text = stringResource(R.string.label_title_form),
                         style = TextStyle(fontWeight = FontWeight.Bold)
                     )
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(R.string.form_button_close_desc),
+                        contentDescription = stringResource(R.string.description_button_close_form),
                         tint = colorResource(android.R.color.darker_gray),
                         modifier = Modifier.clickable { onDismissRequest() }
                     )
@@ -312,7 +312,9 @@ private fun FormDialog(
                     horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = stringResource(R.string.form_label_quantity) + "%,d".format(quantity))
+                    Text(
+                        text = stringResource(R.string.label_quantity_form) + "%,d".format(quantity)
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                     ElevatedButton(
                         onClick = { quantity++ },
@@ -321,7 +323,7 @@ private fun FormDialog(
                             else -> true
                         }
                     ) {
-                        Text(text = stringResource(R.string.form_button_plus))
+                        Text(text = stringResource(R.string.button_plus_form))
                     }
                     ElevatedButton(
                         onClick = { quantity-- },
@@ -330,7 +332,7 @@ private fun FormDialog(
                             else -> true
                         }
                     ) {
-                        Text(text = stringResource(R.string.form_button_minus))
+                        Text(text = stringResource(R.string.button_minus_form))
                     }
                 }
 
@@ -370,7 +372,7 @@ private fun FormDialog(
                                 ),
                                 placeholder = {
                                     Text(
-                                        text = stringResource(R.string.form_placeholder),
+                                        text = stringResource(R.string.placeholder_form),
                                         style = TextStyle(color = Color.Gray)
                                     )
                                 }
@@ -389,7 +391,7 @@ private fun FormDialog(
                             onClickAdd(quantity, comment)
                         }
                     ) {
-                        Text(text = stringResource(R.string.form_button_add))
+                        Text(text = stringResource(R.string.button_add_form))
                     }
                 }
             }
