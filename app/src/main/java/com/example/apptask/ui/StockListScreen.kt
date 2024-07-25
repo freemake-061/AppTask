@@ -99,7 +99,13 @@ fun StockListScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
-                title = { Text(text = stringResource(R.string.home_topbar_title)) },
+                title = {
+                    if (stockListUiState.stockList.none{ it.isChecked }) {
+                        Text(text = stringResource(R.string.home_topbar_title))
+                    } else {
+                        Text(text = "%,d".format(stockListUiState.stockList.count{ it.isChecked }) + "個を選択中")
+                    }
+                },
                 actions = {
                     Menu(
                         onClickClear = { stockViewModel.allClearStockList() },
@@ -196,7 +202,9 @@ private fun StockRow(
                 model = stockRow.stock.uri,
                 contentDescription = stringResource(R.string.list_image_desc),
                 contentScale = ContentScale.FillBounds,
-                modifier = Modifier.height(20.dp).width(20.dp)
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(20.dp)
             )
             Text(text = stockRow.stock.time)
             Text(text = "%,d".format(stockRow.stock.quantity))
