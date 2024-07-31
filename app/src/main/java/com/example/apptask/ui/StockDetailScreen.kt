@@ -54,7 +54,7 @@ fun StockDetailScreen(
                 ),
                 title = {
                     Text(
-                        text = stockListUiState.stockList[index].stock.comment,
+                        text = stockListUiState.stockList[index].stockA.comment,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -75,11 +75,11 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "time:${stockListUiState.stockList[index].stock.time}")
-            Text(text = "quantity:${stockListUiState.stockList[index].stock.quantity}")
-            Text(text = "comment:${stockListUiState.stockList[index].stock.comment}")
+            Text(text = "time:${stockListUiState.stockList[index].stockA.time}")
+            Text(text = "quantity:${stockListUiState.stockList[index].stockA.quantity}")
+            Text(text = "comment:${stockListUiState.stockList[index].stockA.comment}")
             ImagePicker(
-                stockUri = stockListUiState.stockList[index].stock.uri,
+                stockUri = stockListUiState.stockList[index].stockA.uri,
                 onClickSave = { imageUri ->
                     stockViewModel.updateImageUri(index, imageUri)
                     onPopToScreen(Route.StockListScreen())
