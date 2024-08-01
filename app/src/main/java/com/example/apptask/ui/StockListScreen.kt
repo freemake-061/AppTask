@@ -70,7 +70,7 @@ import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
 import com.example.apptask.data.InventoryApplication
-import com.example.apptask.data.Item
+import com.example.apptask.data.Stock
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -90,8 +90,8 @@ fun StockListScreen(
             onClickAdd = { quantity, comment ->
                 stockViewModel.addStock(quantity, comment)
                 coroutineScope.launch {
-                    val dao = InventoryApplication.database.itemDao()
-                    dao.insert(Item(id = 0, quantity = quantity, comment = comment))
+                    val dao = InventoryApplication.database.stockDao()
+                    dao.insert(Stock(id = 0, quantity = quantity, comment = comment))
                     dao.getAllStocks().collect {
                         println(it)
                     }

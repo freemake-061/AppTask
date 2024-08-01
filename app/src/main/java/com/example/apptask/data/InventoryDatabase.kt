@@ -3,7 +3,7 @@ package com.example.apptask.data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [Item::class], version = 1, exportSchema = false)
+@Database(entities = [Stock::class], version = 1, exportSchema = false)
 abstract class InventoryDatabase : RoomDatabase() {
-    abstract fun itemDao(): ItemDao
+    abstract fun stockDao(): StockDao
 }

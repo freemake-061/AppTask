@@ -12,7 +12,7 @@ class InventoryApplication : Application() {
         super.onCreate()
 
         database = Room.databaseBuilder(
-            applicationContext, InventoryDatabase::class.java,"item_database"
+            applicationContext, InventoryDatabase::class.java,"stock_database"
         ).build()
     }
 }
