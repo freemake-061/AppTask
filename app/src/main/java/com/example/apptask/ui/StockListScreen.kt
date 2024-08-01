@@ -91,7 +91,7 @@ fun StockListScreen(
                 stockViewModel.addStock(quantity, comment)
                 coroutineScope.launch {
                     val dao = InventoryApplication.database.stockDao()
-                    dao.insert(Stock(id = 0, quantity = quantity, comment = comment))
+                    dao.insert(Stock(id = 0, uri = null, quantity = quantity, comment = comment))
                     dao.getAllStocks().collect {
                         println(it)
                     }
