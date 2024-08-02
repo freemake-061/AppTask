@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [Stock::class], version = 1, exportSchema = false)
-@TypeConverters(UriConverter::class)
+@TypeConverters(UriConverter::class, DateTimeConverter::class)
 abstract class InventoryDatabase : RoomDatabase() {
     abstract fun stockDao(): StockDao
 }

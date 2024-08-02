@@ -72,6 +72,7 @@ import com.example.apptask.Route
 import com.example.apptask.data.InventoryApplication
 import com.example.apptask.data.Stock
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,7 +92,17 @@ fun StockListScreen(
                 stockViewModel.addStock(quantity, comment)
                 coroutineScope.launch {
                     val dao = InventoryApplication.database.stockDao()
-                    dao.insert(Stock(id = 0, uri = null, quantity = quantity, comment = comment))
+                    dao.insert(
+                        Stock(
+                            id = 0,
+                            quantity = quantity,
+                            comment = comment,
+                            uri = null,
+                            deleteFlag = false,
+                            createdDateTime = LocalDateTime.now(),
+                            updatedDateTime = LocalDateTime.now()
+                        )
+                    )
                     dao.getAllStocks().collect {
                         println(it)
                     }
