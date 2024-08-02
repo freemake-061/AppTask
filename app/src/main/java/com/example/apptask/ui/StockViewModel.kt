@@ -32,7 +32,7 @@ class StockViewModel : ViewModel() {
     fun addStock(quantity: Int, comment: String) {
         val newStockRow = StockRow(
             isChecked = false,
-            stock = Stock(
+            stockA = StockA(
                 uri = null,
                 time = getCurrentTime(),
                 quantity = quantity,
@@ -93,13 +93,13 @@ class StockViewModel : ViewModel() {
 
     fun sumQuantity(): Int {
         val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
-        return isCheckedStock.sumOf { it.stock.quantity }
+        return isCheckedStock.sumOf { it.stockA.quantity }
     }
 
     //  詳細画面
     fun updateImageUri(index: Int, uri: Uri?) {
-        val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
-        val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)
+        val newStock = _uiState.value.stockList[index].stockA.copy(uri = uri)
+        val newStockRow = _uiState.value.stockList[index].copy(stockA = newStock)
         val newStockList = _uiState.value.stockList.toMutableList()
         newStockList[index] = newStockRow
         _uiState.update { currentState ->

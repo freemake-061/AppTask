@@ -49,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,6 +69,9 @@ import coil.compose.AsyncImage
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
+import com.example.apptask.data.InventoryApplication
+import com.example.apptask.data.Stock
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,11 +82,20 @@ fun StockListScreen(
 ) {
     val stockListUiState by stockViewModel.uiState.collectAsState()
 
+    val coroutineScope = rememberCoroutineScope()
+
     if (stockListUiState.canShowForm) {
         FormDialog(
             onDismissRequest = { stockViewModel.closeForm() },
             onClickAdd = { quantity, comment ->
                 stockViewModel.addStock(quantity, comment)
+                coroutineScope.launch {
+                    val dao = InventoryApplication.database.stockDao()
+                    dao.insert(Stock(id = 0, uri = null, quantity = quantity, comment = comment))
+                    dao.getAllStocks().collect {
+                        println(it)
+                    }
+                }
             }
         )
     }
@@ -199,17 +212,17 @@ private fun StockRow(
                 onCheckedChange = { onCheckedChange(index) }
             )
             AsyncImage(
-                model = stockRow.stock.uri,
+                model = stockRow.stockA.uri,
                 contentDescription = stringResource(R.string.description_image_list),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .height(20.dp)
                     .width(20.dp)
             )
-            Text(text = stockRow.stock.time)
-            Text(text = "%,d".format(stockRow.stock.quantity))
+            Text(text = stockRow.stockA.time)
+            Text(text = "%,d".format(stockRow.stockA.quantity))
             Text(
-                text = stockRow.stock.comment,
+                text = stockRow.stockA.comment,
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
