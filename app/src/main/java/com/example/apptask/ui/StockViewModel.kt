@@ -4,12 +4,16 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import com.example.apptask.Constants
+import com.example.apptask.data.InventoryApplication
+import com.example.apptask.data.Stock
+import kotlinx.coroutines.launch
 
 class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
@@ -42,6 +46,24 @@ class StockViewModel : ViewModel() {
         val newStockList = _uiState.value.stockList + newStockRow
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
+        }
+
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.insert(
+                Stock(
+                    id = 0,
+                    quantity = quantity,
+                    comment = comment,
+                    uri = null,
+                    deleteFlag = false,
+                    createdDateTime = LocalDateTime.now(),
+                    updatedDateTime = LocalDateTime.now()
+                )
+            )
+            dao.getAllStocks().collect {
+                println(it)
+            }
         }
     }
 

@@ -90,23 +90,6 @@ fun StockListScreen(
             onDismissRequest = { stockViewModel.closeForm() },
             onClickAdd = { quantity, comment ->
                 stockViewModel.addStock(quantity, comment)
-                coroutineScope.launch {
-                    val dao = InventoryApplication.database.stockDao()
-                    dao.insert(
-                        Stock(
-                            id = 0,
-                            quantity = quantity,
-                            comment = comment,
-                            uri = null,
-                            deleteFlag = false,
-                            createdDateTime = LocalDateTime.now(),
-                            updatedDateTime = LocalDateTime.now()
-                        )
-                    )
-                    dao.getAllStocks().collect {
-                        println(it)
-                    }
-                }
             }
         )
     }
