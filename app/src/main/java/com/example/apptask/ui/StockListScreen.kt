@@ -127,7 +127,7 @@ fun StockListScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             StockList(
-                stockListUiState = stockListUiState,
+                stockList = stockListUiState.stockList,
                 onCheckedChange = { index ->
                     stockViewModel.onCheckedChange(index)
                 },
@@ -144,13 +144,13 @@ fun StockListScreen(
 
 @Composable
 private fun StockList(
-    stockListUiState: StockListUiState,
+    stockList: List<StockRow>,
     onCheckedChange: (Int) -> Unit,
     onClickStock: (Int) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
+        itemsIndexed(stockList) { index, stockRowUiState ->
             StockRow(
                 index = index,
                 stockRow = stockRowUiState,
