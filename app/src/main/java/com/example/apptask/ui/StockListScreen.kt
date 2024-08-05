@@ -49,7 +49,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -69,9 +68,6 @@ import coil.compose.AsyncImage
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
-import com.example.apptask.data.InventoryApplication
-import com.example.apptask.data.Stock
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,20 +78,11 @@ fun StockListScreen(
 ) {
     val stockListUiState by stockViewModel.uiState.collectAsState()
 
-    val coroutineScope = rememberCoroutineScope()
-
     if (stockListUiState.canShowForm) {
         FormDialog(
             onDismissRequest = { stockViewModel.closeForm() },
             onClickAdd = { quantity, comment ->
                 stockViewModel.addStock(quantity, comment)
-                coroutineScope.launch {
-                    val dao = InventoryApplication.database.stockDao()
-                    dao.insert(Stock(id = 0, uri = null, quantity = quantity, comment = comment))
-                    dao.getAllStocks().collect {
-                        println(it)
-                    }
-                }
             }
         )
     }
