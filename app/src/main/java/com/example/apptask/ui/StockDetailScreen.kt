@@ -53,11 +53,13 @@ fun StockDetailScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 title = {
-                    Text(
-                        text = stockListUiState.stockList[index].stockA.comment,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    stockListUiState.stockList[index].stock.comment?.let {
+                        Text(
+                            text = it,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(
@@ -75,11 +77,11 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "time:${stockListUiState.stockList[index].stockA.time}")
-            Text(text = "quantity:${stockListUiState.stockList[index].stockA.quantity}")
-            Text(text = "comment:${stockListUiState.stockList[index].stockA.comment}")
+            Text(text = "time:${stockListUiState.stockList[index].stock.createdDateTime}")
+            Text(text = "quantity:${stockListUiState.stockList[index].stock.quantity}")
+            Text(text = "comment:${stockListUiState.stockList[index].stock.comment}")
             ImagePicker(
-                stockUri = stockListUiState.stockList[index].stockA.uri,
+                stockUri = stockListUiState.stockList[index].stock.uri,
                 onClickSave = { imageUri ->
                     stockViewModel.updateImageUri(index, imageUri)
                     onPopToScreen(Route.StockListScreen())

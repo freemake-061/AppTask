@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter
 import com.example.apptask.Constants
 import com.example.apptask.data.InventoryApplication
 import com.example.apptask.data.Stock
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class StockViewModel : ViewModel() {
@@ -36,14 +37,22 @@ class StockViewModel : ViewModel() {
     fun addStock(quantity: Int, comment: String) {
         val newStockRow = StockRow(
             isChecked = false,
-            stockA = StockA(
+            stock = Stock(
                 uri = null,
-                time = getCurrentTime(),
                 quantity = quantity,
-                comment = comment
+                comment = comment,
+                deleteFlag = false,
+                createdDateTime = LocalDateTime.now(),
+                updatedDateTime = LocalDateTime.now()
             )
         )
+
+        val oldList = _uiState.value.stockList
         val newStockList = _uiState.value.stockList + newStockRow
+        newStockList.mapIndexed { index, stockRow ->
+            val isChecked = oldList.getOrNull(index)?.isChecked ?: false
+            StockRow(isChecked = isChecked, stockRow.stock)
+        }
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
@@ -61,7 +70,7 @@ class StockViewModel : ViewModel() {
                     updatedDateTime = LocalDateTime.now()
                 )
             )
-            dao.getAllStocks().collect {
+            dao.getAllStocks().take(1).collect {
                 println(it)
             }
         }
@@ -115,13 +124,13 @@ class StockViewModel : ViewModel() {
 
     fun sumQuantity(): Int {
         val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
-        return isCheckedStock.sumOf { it.stockA.quantity }
+        return isCheckedStock.sumOf { it.stock.quantity }
     }
 
     //  詳細画面
     fun updateImageUri(index: Int, uri: Uri?) {
-        val newStock = _uiState.value.stockList[index].stockA.copy(uri = uri)
-        val newStockRow = _uiState.value.stockList[index].copy(stockA = newStock)
+        val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
+        val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)
         val newStockList = _uiState.value.stockList.toMutableList()
         newStockList[index] = newStockRow
         _uiState.update { currentState ->

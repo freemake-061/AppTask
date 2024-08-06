@@ -199,21 +199,23 @@ private fun StockRow(
                 onCheckedChange = { onCheckedChange(index) }
             )
             AsyncImage(
-                model = stockRow.stockA.uri,
+                model = stockRow.stock.uri,
                 contentDescription = stringResource(R.string.description_image_list),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .height(20.dp)
                     .width(20.dp)
             )
-            Text(text = stockRow.stockA.time)
-            Text(text = "%,d".format(stockRow.stockA.quantity))
-            Text(
-                text = stockRow.stockA.comment,
-                modifier = Modifier.weight(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Text(text = stockRow.stock.createdDateTime.toString())
+            Text(text = "%,d".format(stockRow.stock.quantity))
+            stockRow.stock.comment?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.description_button_delete_list),
