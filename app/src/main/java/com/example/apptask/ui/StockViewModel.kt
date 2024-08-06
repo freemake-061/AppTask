@@ -70,6 +70,7 @@ class StockViewModel : ViewModel() {
                     updatedDateTime = LocalDateTime.now()
                 )
             )
+            //  Daoでflowを使っていると意図しない呼ばれ方をするため、takeやfirstを使用するorそもそもflowを使用しない
             dao.getAllStocks().take(1).collect {
                 println(it)
             }
