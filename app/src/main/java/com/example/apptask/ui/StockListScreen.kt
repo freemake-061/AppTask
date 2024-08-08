@@ -143,6 +143,7 @@ fun StockListScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun StockList(
     stockList: List<StockRow>,
