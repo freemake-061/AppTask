@@ -20,6 +20,20 @@ class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState
 
+    init {
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.getAllStocks().collect {
+                _uiState.update { currentState ->
+                    val stockList = List(it.size) { index ->
+                        StockRow(isChecked = false, it[index])
+                    }
+                    currentState.copy(stockList = stockList)
+                }
+            }
+        }
+    }
+
     //  入力フォーム
     fun showForm() {
         _uiState.update { currentState ->
@@ -35,41 +49,25 @@ class StockViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addStock(quantity: Int, comment: String) {
-        val newStockRow = StockRow(
-            isChecked = false,
-            stock = Stock(
-                uri = null,
-                quantity = quantity,
-                comment = comment,
-                deleteFlag = false,
-                createdDateTime = LocalDateTime.now(),
-                updatedDateTime = LocalDateTime.now()
-            )
+        val newStock = Stock(
+            id = 0,
+            quantity = quantity,
+            comment = comment,
+            uri = null,
+            deleteFlag = false,
+            createdDateTime = LocalDateTime.now(),
+            updatedDateTime = LocalDateTime.now()
         )
 
-        val oldList = _uiState.value.stockList
-        val newStockList = _uiState.value.stockList + newStockRow
-        newStockList.mapIndexed { index, stockRow ->
-            val isChecked = oldList.getOrNull(index)?.isChecked ?: false
-            StockRow(isChecked = isChecked, stockRow.stock)
-        }
+        val newStockList = _uiState.value.stockList + StockRow(isChecked = false, stock = newStock)
+
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
 
         viewModelScope.launch {
             val dao = InventoryApplication.database.stockDao()
-            dao.insert(
-                Stock(
-                    id = 0,
-                    quantity = quantity,
-                    comment = comment,
-                    uri = null,
-                    deleteFlag = false,
-                    createdDateTime = LocalDateTime.now(),
-                    updatedDateTime = LocalDateTime.now()
-                )
-            )
+            dao.insert(newStock)
             //  Daoでflowを使っていると意図しない呼ばれ方をするため、takeやfirstを使用するorそもそもflowを使用しない
             dao.getAllStocks().take(1).collect {
                 println(it)
@@ -89,6 +87,11 @@ class StockViewModel : ViewModel() {
         val newStockList = _uiState.value.stockList.minus(targetStockRow)
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
+        }
+
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.update(targetStockRow.stock.copy(deleteFlag = true))
         }
     }
 

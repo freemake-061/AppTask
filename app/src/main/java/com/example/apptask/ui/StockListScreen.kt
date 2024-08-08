@@ -151,13 +151,15 @@ private fun StockList(
 ) {
     LazyColumn {
         itemsIndexed(stockList) { index, stockRowUiState ->
-            StockRow(
-                index = index,
-                stockRow = stockRowUiState,
-                onCheckedChange = onCheckedChange,
-                onClickStock = onClickStock,
-                onClickDelete = onClickDelete
-            )
+            if (!stockList[index].stock.deleteFlag) {
+                StockRow(
+                    index = index,
+                    stockRow = stockRowUiState,
+                    onCheckedChange = onCheckedChange,
+                    onClickStock = onClickStock,
+                    onClickDelete = onClickDelete
+                )
+            }
         }
     }
 }
