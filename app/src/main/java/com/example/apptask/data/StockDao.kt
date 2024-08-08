@@ -16,9 +16,6 @@ interface StockDao {
     @Update
     suspend fun update(stock: Stock)
 
-    @Delete
-    suspend fun delete(stock: Stock)
-
     @Query("SELECT * from stocks WHERE id = :id")
     fun getStock(id: Int): Flow<Stock>
 

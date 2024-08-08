@@ -68,6 +68,7 @@ import coil.compose.AsyncImage
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -164,6 +165,7 @@ private fun StockList(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StockRow(
@@ -208,7 +210,8 @@ private fun StockRow(
                     .height(20.dp)
                     .width(20.dp)
             )
-            Text(text = stockRow.stock.createdDateTime.toString())
+            val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+            Text(text = formatTime.format(stockRow.stock.createdDateTime))
             Text(text = "%,d".format(stockRow.stock.quantity))
             stockRow.stock.comment?.let {
                 Text(

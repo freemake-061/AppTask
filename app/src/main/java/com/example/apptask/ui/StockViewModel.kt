@@ -75,12 +75,6 @@ class StockViewModel : ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getCurrentTime(): String {
-        val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
-        return formatTime.format(LocalDateTime.now())
-    }
-
     //  リスト
     fun deleteStock(index: Int) {
         val targetStockRow = _uiState.value.stockList[index]
