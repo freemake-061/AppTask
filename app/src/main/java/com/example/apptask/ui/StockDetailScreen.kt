@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
+import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +79,8 @@ fun StockDetailScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "time:${stockListUiState.stockList[index].stock.createdDateTime}")
+            val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+            Text(text = "time:${formatTime.format(stockListUiState.stockList[index].stock.createdDateTime)}")
             Text(text = "quantity:${stockListUiState.stockList[index].stock.quantity}")
             Text(text = "comment:${stockListUiState.stockList[index].stock.comment}")
             ImagePicker(
