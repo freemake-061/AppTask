@@ -21,4 +21,7 @@ interface StockDao {
 
     @Query("SELECT * from stocks ORDER BY id ASC")
     fun getAllStocks(): Flow<List<Stock>>
+
+    @Query("UPDATE stocks SET deleteFlag = 1")
+    suspend fun updateAllStocks()
 }

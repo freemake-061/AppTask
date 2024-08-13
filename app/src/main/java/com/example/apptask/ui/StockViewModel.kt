@@ -23,10 +23,11 @@ class StockViewModel : ViewModel() {
             val dao = InventoryApplication.database.stockDao()
             dao.getAllStocks().collect {
                 _uiState.update { currentState ->
-                    val stockList = List(it.size) { index ->
+                    val oldStockList = List(it.size) { index ->
                         StockRow(isChecked = false, it[index])
                     }
-                    currentState.copy(stockList = stockList)
+                    val newStockList = oldStockList.filterNot { it.stock.deleteFlag }
+                    currentState.copy(stockList = newStockList)
                 }
             }
         }
@@ -102,6 +103,11 @@ class StockViewModel : ViewModel() {
     fun allClearStockList() {
         _uiState.update { currentState ->
             currentState.copy(stockList = listOf())
+        }
+
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.updateAllStocks()
         }
     }
 
