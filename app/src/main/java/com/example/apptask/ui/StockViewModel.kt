@@ -138,6 +138,11 @@ class StockViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
+
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.update(newStock)
+        }
     }
 
 }
