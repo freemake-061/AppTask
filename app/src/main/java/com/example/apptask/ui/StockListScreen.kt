@@ -68,6 +68,7 @@ import coil.compose.AsyncImage
 import com.example.apptask.Constants
 import com.example.apptask.R
 import com.example.apptask.Route
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +128,7 @@ fun StockListScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             StockList(
-                stockListUiState = stockListUiState,
+                stockList = stockListUiState.stockList,
                 onCheckedChange = { index ->
                     stockViewModel.onCheckedChange(index)
                 },
@@ -142,26 +143,30 @@ fun StockListScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun StockList(
-    stockListUiState: StockListUiState,
+    stockList: List<StockRow>,
     onCheckedChange: (Int) -> Unit,
     onClickStock: (Int) -> Unit,
     onClickDelete: (Int) -> Unit
 ) {
     LazyColumn {
-        itemsIndexed(stockListUiState.stockList) { index, stockRowUiState ->
-            StockRow(
-                index = index,
-                stockRow = stockRowUiState,
-                onCheckedChange = onCheckedChange,
-                onClickStock = onClickStock,
-                onClickDelete = onClickDelete
-            )
+        itemsIndexed(stockList) { index, stockRowUiState ->
+            if (!stockList[index].stock.deleteFlag) {
+                StockRow(
+                    index = index,
+                    stockRow = stockRowUiState,
+                    onCheckedChange = onCheckedChange,
+                    onClickStock = onClickStock,
+                    onClickDelete = onClickDelete
+                )
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StockRow(
@@ -199,21 +204,25 @@ private fun StockRow(
                 onCheckedChange = { onCheckedChange(index) }
             )
             AsyncImage(
-                model = stockRow.stockA.uri,
+                model = stockRow.stock.uri,
                 contentDescription = stringResource(R.string.description_image_list),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
                     .height(20.dp)
                     .width(20.dp)
             )
-            Text(text = stockRow.stockA.time)
-            Text(text = "%,d".format(stockRow.stockA.quantity))
-            Text(
-                text = stockRow.stockA.comment,
-                modifier = Modifier.weight(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Text(text = "$index")
+            val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
+            Text(text = formatTime.format(stockRow.stock.createdDateTime))
+            Text(text = "%,d".format(stockRow.stock.quantity))
+            stockRow.stock.comment?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.description_button_delete_list),

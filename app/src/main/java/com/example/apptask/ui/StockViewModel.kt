@@ -9,15 +9,29 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import com.example.apptask.Constants
 import com.example.apptask.data.InventoryApplication
 import com.example.apptask.data.Stock
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class StockViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(StockListUiState())
     val uiState: StateFlow<StockListUiState> = _uiState
+
+    init {
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.getAllStocks().collect {
+                _uiState.update { currentState ->
+                    val oldStockList = List(it.size) { index ->
+                        StockRow(isChecked = false, it[index])
+                    }
+                    val newStockList = oldStockList.filterNot { it.stock.deleteFlag }
+                    currentState.copy(stockList = newStockList)
+                }
+            }
+        }
+    }
 
     //  入力フォーム
     fun showForm() {
@@ -34,43 +48,30 @@ class StockViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addStock(quantity: Int, comment: String) {
-        val newStockRow = StockRow(
-            isChecked = false,
-            stockA = StockA(
-                uri = null,
-                time = getCurrentTime(),
-                quantity = quantity,
-                comment = comment
-            )
+        val newStock = Stock(
+            id = 0,
+            quantity = quantity,
+            comment = comment,
+            uri = null,
+            deleteFlag = false,
+            createdDateTime = LocalDateTime.now(),
+            updatedDateTime = LocalDateTime.now()
         )
-        val newStockList = _uiState.value.stockList + newStockRow
+
+        val newStockList = _uiState.value.stockList + StockRow(isChecked = false, stock = newStock)
+
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
         }
 
         viewModelScope.launch {
             val dao = InventoryApplication.database.stockDao()
-            dao.insert(
-                Stock(
-                    id = 0,
-                    quantity = quantity,
-                    comment = comment,
-                    uri = null,
-                    deleteFlag = false,
-                    createdDateTime = LocalDateTime.now(),
-                    updatedDateTime = LocalDateTime.now()
-                )
-            )
-            dao.getAllStocks().collect {
+            dao.insert(newStock)
+            //  Daoでflowを使っていると意図しない呼ばれ方をするため、takeやfirstを使用するorそもそもflowを使用しない
+            dao.getAllStocks().take(1).collect {
                 println(it)
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getCurrentTime(): String {
-        val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
-        return formatTime.format(LocalDateTime.now())
     }
 
     //  リスト
@@ -79,6 +80,11 @@ class StockViewModel : ViewModel() {
         val newStockList = _uiState.value.stockList.minus(targetStockRow)
         _uiState.update { currentState ->
             currentState.copy(stockList = newStockList)
+        }
+
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.update(targetStockRow.stock.copy(deleteFlag = true))
         }
     }
 
@@ -98,6 +104,11 @@ class StockViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(stockList = listOf())
         }
+
+        viewModelScope.launch {
+            val dao = InventoryApplication.database.stockDao()
+            dao.updateAllStocks()
+        }
     }
 
     //  メニュー > 合計
@@ -115,13 +126,13 @@ class StockViewModel : ViewModel() {
 
     fun sumQuantity(): Int {
         val isCheckedStock = _uiState.value.stockList.filter { it.isChecked }
-        return isCheckedStock.sumOf { it.stockA.quantity }
+        return isCheckedStock.sumOf { it.stock.quantity }
     }
 
     //  詳細画面
     fun updateImageUri(index: Int, uri: Uri?) {
-        val newStock = _uiState.value.stockList[index].stockA.copy(uri = uri)
-        val newStockRow = _uiState.value.stockList[index].copy(stockA = newStock)
+        val newStock = _uiState.value.stockList[index].stock.copy(uri = uri)
+        val newStockRow = _uiState.value.stockList[index].copy(stock = newStock)
         val newStockList = _uiState.value.stockList.toMutableList()
         newStockList[index] = newStockRow
         _uiState.update { currentState ->

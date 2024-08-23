@@ -16,12 +16,12 @@ interface StockDao {
     @Update
     suspend fun update(stock: Stock)
 
-    @Delete
-    suspend fun delete(stock: Stock)
-
     @Query("SELECT * from stocks WHERE id = :id")
     fun getStock(id: Int): Flow<Stock>
 
     @Query("SELECT * from stocks ORDER BY id ASC")
     fun getAllStocks(): Flow<List<Stock>>
+
+    @Query("UPDATE stocks SET deleteFlag = 1")
+    suspend fun updateAllStocks()
 }
