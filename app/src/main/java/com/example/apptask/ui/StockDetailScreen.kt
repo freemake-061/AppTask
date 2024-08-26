@@ -125,7 +125,6 @@ private fun ImagePicker(
                 Text(text = stringResource(R.string.button_save_detail))
             }
         }
-        Text(text = "$imageUri")    //テスト
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center

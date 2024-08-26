@@ -211,7 +211,6 @@ private fun StockRow(
                     .height(20.dp)
                     .width(20.dp)
             )
-            Text(text = "$index")
             val formatTime = DateTimeFormatter.ofPattern(Constants.CLOCK_FORMAT)
             Text(text = formatTime.format(stockRow.stock.createdDateTime))
             Text(text = "%,d".format(stockRow.stock.quantity))
