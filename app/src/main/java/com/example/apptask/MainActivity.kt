@@ -105,15 +105,10 @@ private fun AppTask() {
                     enterTransition = { slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) }
                 ) {backStackEntry ->
-                    val parentEntry = remember(backStackEntry) {
-                        navController.getBackStackEntry("Stock")
-                    }
-                    val stockViewModel: StockViewModel = viewModel(viewModelStoreOwner = parentEntry)
                     val index = backStackEntry.arguments?.getInt("index")
                     if (index != null) {
                         StockDetailScreen(
                             index = index,
-                            stockViewModel = stockViewModel,
                             onPopToScreen = onPopToScreen
                         )
                     }

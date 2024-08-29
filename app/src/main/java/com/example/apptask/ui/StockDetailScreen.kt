@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.apptask.Constants
 import com.example.apptask.R
@@ -42,10 +44,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun StockDetailScreen(
     index: Int,
-    stockViewModel: StockViewModel,
-    onPopToScreen: (Route) -> Unit
+    onPopToScreen: (Route) -> Unit,
+    detailViewModel: DetailViewModel = viewModel()
 ) {
-    val stockListUiState by stockViewModel.uiState.collectAsState()
+
+    val detailUiState by detailViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -57,7 +60,7 @@ fun StockDetailScreen(
                 title = {
                     stockListUiState.stockList[index].stock.comment?.let {
                         Text(
-                            text = it,
+                            text = "test",  // TODO
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
